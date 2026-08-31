@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaction History - ICE FISHING</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ============================================================
+           RESET
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #080c18;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 180, 255, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 45%),
+                #080c18;
+        }
+
+        /* ============================================================
+           PARTICLES
+           ============================================================ */
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            user-select: none;
+            animation: fall linear infinite;
+        }
+
+        .particle.ice {
+            color: rgba(100, 200, 255, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .particle.fish {
+            color: rgba(77, 201, 246, 0.04);
+            font-size: 1rem;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.05;
+            }
+            90% {
+                opacity: 0.05;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ============================================================
+           CONTAINER
+           ============================================================ */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-top: 8px;
+        }
+
+        .header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .brand .logo {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 20px rgba(77, 201, 246, 0.15));
+        }
+
+        .header .brand h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header .brand h1 span {
+            color: #ffffff;
+        }
+
+        .header .back-btn {
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+        }
+
+        /* ============================================================
+           PAGE TITLE
+           ============================================================ */
+        .page-title {
+            margin-bottom: 24px;
+        }
+
+        .page-title h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .page-title p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ============================================================
+           STATS ROW
+           ============================================================ */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .stat-box .label {
+            font-size: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .stat-box .number.approved {
+            color: #00ff88;
+        }
+        .stat-box .number.pending {
+            color: #ffa500;
+        }
+        .stat-box .number.rejected {
+            color: #ff6b6b;
+        }
+        .stat-box .number.total {
+            color: #ffffff;
+        }
+
+        /* ============================================================
+           FILTERS
+           ============================================================ */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .filters select,
+        .filters input {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .filters select {
+            min-width: 130px;
+            cursor: pointer;
+        }
+
+        .filters select option {
+            background: #080c18;
+            color: #ffffff;
+        }
+
+        .filters input {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filters input::placeholder {
+            color: rgba(255, 255, 255, 0.08);
+        }
+
+        .filters select:focus,
+        .filters input:focus {
+            border-color: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ============================================================
+           TRANSACTION LIST
+           ============================================================ */
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .transaction-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+
+        .transaction-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .transaction-item .left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .transaction-item .left .type {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .transaction-item .left .type .icon {
+            margin-right: 6px;
+        }
+
+        .transaction-item .left .details {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .transaction-item .left .details .date {
+            color: rgba(255, 255, 255, 0.08);
+        }
+
+        .transaction-item .right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .transaction-item .right .amount {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .transaction-item .right .amount.positive {
+            color: #00ff88;
+        }
+
+        .transaction-item .right .amount.negative {
+            color: #ff6b6b;
+        }
+
+        .transaction-item .right .status-badge {
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .transaction-item .right .status-badge.approved {
+            background: rgba(0, 255, 136, 0.08);
+            color: #00ff88;
+        }
+
+        .transaction-item .right .status-badge.pending {
+            background: rgba(255, 165, 0, 0.08);
+            color: #ffa500;
+        }
+
+        .transaction-item .right .status-badge.rejected {
+            background: rgba(255, 50, 50, 0.08);
+            color: #ff6b6b;
+        }
+
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255, 255, 255, 0.04);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            opacity: 0.2;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.04);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .header .brand h1 {
+                font-size: 1rem;
+            }
+
+            .header .brand .logo {
+                font-size: 1.5rem;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .stat-box {
+                padding: 10px 6px;
+            }
+
+            .stat-box .number {
+                font-size: 0.95rem;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .filters select,
+            .filters input {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .transaction-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 12px 14px;
+            }
+
+            .transaction-item .right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .page-title h2 {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+
+            .stat-box .number {
+                font-size: 0.8rem;
+            }
+
+            .stat-box .label {
+                font-size: 0.4rem;
+            }
+
+            .transaction-item .left .type {
+                font-size: 0.7rem;
+            }
+
+            .transaction-item .right .amount {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background -->
+    <div class="bg"></div>
+
+    <!-- Particles -->
+    <div id="particles"></div>
+
+    <!-- ============================================================
+       TRANSACTION HISTORY
+       ============================================================ -->
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <span class="logo">🎣</span>
+                <h1>ICE <span>FISHING</span></h1>
+            </div>
+            <a href="dashboard.html" class="back-btn">← Dashboard</a>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h2>📊 Transaction History</h2>
+            <p>View all your deposits and package purchases</p>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row" id="statsRow">
+            <div class="stat-box">
+                <div class="number total" id="totalCount">0</div>
+                <div class="label">Total</div>
+            </div>
+            <div class="stat-box">
+                <div class="number approved" id="approvedCount">0</div>
+                <div class="label">Approved</div>
+            </div>
+            <div class="stat-box">
+                <div class="number pending" id="pendingCount">0</div>
+                <div class="label">Pending</div>
+            </div>
+            <div class="stat-box">
+                <div class="number rejected" id="rejectedCount">0</div>
+                <div class="label">Rejected</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <select id="typeFilter">
+                <option value="all">All Types</option>
+                <option value="deposit">Deposits</option>
+                <option value="package">Packages</option>
+            </select>
+            <select id="statusFilter">
+                <option value="all">All Status</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="🔍 Search..." />
+        </div>
+
+        <!-- Transaction List -->
+        <div class="transaction-list" id="transactionList">
+            <div class="empty-state">
+                <div class="icon">📭</div>
+                <p>No transactions found</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================
+       FIREBASE SDK
+       ============================================================ -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // PARTICLES
+        // ============================================================
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const ice = ['❄️', '✦', '❄️', '✦'];
+            const fish = ['🐟', '🐠', '🐡'];
+
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                const isFish = Math.random() < 0.3;
+                el.className = 'particle ' + (isFish ? 'fish' : 'ice');
+                el.textContent = isFish ?
+                    fish[Math.floor(Math.random() * fish.length)] :
+                    ice[Math.floor(Math.random() * ice.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 0.8 + 0.5) + 'rem';
+                el.style.animationDuration = (Math.random() * 18 + 12) + 's';
+                el.style.animationDelay = (Math.random() * 20) + 's';
+                container.appendChild(el);
+            }
+        })();
+
+        // ============================================================
+        // FIREBASE
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let allTransactions = [];
+        let currentUser = null;
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                loadTransactions(user.uid);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // ============================================================
+        // LOAD TRANSACTIONS
+        // ============================================================
+        function loadTransactions(userId) {
+            const promises = [];
+
+            // Load deposits
+            const depositsPromise = db.collection('deposits')
+                .where('userId', '==', userId)
+                .orderBy('createdAt', 'desc')
+                .get()
+                .then((snapshot) => {
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        allTransactions.push({
+                            id: doc.id,
+                            type: 'deposit',
+                            title: '💰 Deposit',
+                            details: 'Deposit request',
+                            amount: data.amount || 0,
+                            status: data.status || 'pending',
+                            date: data.createdAt?.toDate?.() || new Date(data.createdAt),
+                            userName: data.userName || 'Player'
+                        });
+                    });
+                });
+
+            // Load packages
+            const packagesPromise = db.collection('userPackages')
+                .where('userId', '==', userId)
+                .orderBy('createdAt', 'desc')
+                .get()
+                .then((snapshot) => {
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        allTransactions.push({
+                            id: doc.id,
+                            type: 'package',
+                            title: '📦 ' + (data.packageName || 'Package'),
+                            details: 'Package purchase - ' + (data.packageName || 'Unknown'),
+                            amount: data.amount || 0,
+                            status: data.status || 'pending',
+                            date: data.createdAt?.toDate?.() || new Date(data.createdAt),
+                            userName: data.userName || 'Player'
+                        });
+                    });
+                });
+
+            // Wait for both queries
+            Promise.all([depositsPromise, packagesPromise])
+                .then(() => {
+                    // Sort by date (newest first)
+                    allTransactions.sort((a, b) => b.date - a.date);
+                    renderStats();
+                    renderTransactions();
+                })
+                .catch((error) => {
+                    console.error('Error loading transactions:', error);
+                });
+        }
+
+        // ============================================================
+        // RENDER STATS
+        // ============================================================
+        function renderStats() {
+            const total = allTransactions.length;
+            const approved = allTransactions.filter(t => t.status === 'approved').length;
+            const pending = allTransactions.filter(t => t.status === 'pending').length;
+            const rejected = allTransactions.filter(t => t.status === 'rejected').length;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('rejectedCount').textContent = rejected;
+        }
+
+        // ============================================================
+        // RENDER TRANSACTIONS
+        // ============================================================
+        function renderTransactions() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = allTransactions;
+
+            // Type filter
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(t => t.type === typeFilter);
+            }
+
+            // Status filter
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(t => t.status === statusFilter);
+            }
+
+            // Search filter
+            if (search) {
+                filtered = filtered.filter(t =>
+                    t.title.toLowerCase().includes(search) ||
+                    t.details.toLowerCase().includes(search) ||
+                    t.userName.toLowerCase().includes(search)
+                );
+            }
+
+            const list = document.getElementById('transactionList');
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <p>No transactions found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach((t) => {
+                const dateStr = t.date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const statusClass = t.status || 'pending';
+                const amountClass = t.type === 'deposit' ? 'positive' : 'negative';
+
+                html += `
+                    <div class="transaction-item">
+                        <div class="left">
+                            <div class="type">${t.title}</div>
+                            <div class="details">${t.details} · <span class="date">${dateStr}</span></div>
+                        </div>
+                        <div class="right">
+                            <span class="amount ${amountClass}">$${t.amount.toFixed(2)}</span>
+                            <span class="status-badge ${statusClass}">${statusClass}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        // ============================================================
+        // FILTER EVENTS
+        // ============================================================
+        document.getElementById('typeFilter').addEventListener('change', renderTransactions);
+        document.getElementById('statusFilter').addEventListener('change', renderTransactions);
+        document.getElementById('searchInput').addEventListener('input', renderTransactions);
+    </script>
+
+</body>
+</html>

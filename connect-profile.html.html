@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect Profile - ICE FISHING</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 120, 255, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 45%),
+                #0a0e1a;
+        }
+
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            user-select: none;
+            animation: fall linear infinite;
+        }
+        .particle.ice {
+            color: rgba(100, 200, 255, 0.05);
+            font-size: 0.9rem;
+        }
+        .particle.fish {
+            color: rgba(77, 201, 246, 0.04);
+            font-size: 1rem;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.05; }
+            90% { opacity: 0.05; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 520px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-top: 8px;
+        }
+
+        .header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .brand .logo {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 20px rgba(77, 201, 246, 0.15));
+        }
+
+        .header .brand h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header .brand h1 span {
+            color: #4dc9f6;
+        }
+
+        .header .back-btn {
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+        }
+
+        /* Page Title */
+        .page-title {
+            margin-bottom: 20px;
+        }
+
+        .page-title h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .page-title p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.2);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        /* Secure Badge */
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 136, 0.04);
+            border: 1px solid rgba(0, 255, 136, 0.06);
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin-bottom: 20px;
+        }
+
+        .secure-badge .icon {
+            font-size: 1.2rem;
+        }
+
+        .secure-badge .text {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .secure-badge .text strong {
+            color: #00ff88;
+        }
+
+        /* Select Platform Label */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Platform Grid */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .platform-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .platform-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .platform-item.selected {
+            border-color: rgba(77, 201, 246, 0.25);
+            background: rgba(77, 201, 246, 0.04);
+            box-shadow: 0 0 30px rgba(77, 201, 246, 0.03);
+        }
+
+        .platform-item .logo {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            overflow: hidden;
+        }
+
+        .platform-item .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .platform-item .logo .fallback {
+            font-size: 0.5rem;
+            color: rgba(255, 255, 255, 0.06);
+        }
+
+        /* ============================================================
+           PLATFORM NAME - FIXED VISIBILITY
+           ============================================================ */
+        .platform-item .name {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            transition: 0.3s;
+            letter-spacing: 0.3px;
+        }
+
+        .platform-item.selected .name {
+            color: #4dc9f6;
+        }
+
+        .platform-item:hover .name {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Selected Display */
+        .selected-display {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .selected-display .label {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.15);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .selected-display .value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4dc9f6;
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .form-group label .required {
+            color: #ff6b6b;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: #ffffff;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group input:focus {
+            border-color: rgba(77, 201, 246, 0.15);
+            background: rgba(77, 201, 246, 0.02);
+        }
+
+        .form-group .hint {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.06);
+            margin-top: 4px;
+        }
+
+        /* Connect Button */
+        .btn-connect {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4dc9f6, #2b8fc4);
+            color: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-connect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(77, 201, 246, 0.2);
+        }
+
+        .btn-connect:active {
+            transform: scale(0.97);
+        }
+
+        .btn-connect:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-connect .loader {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(10, 14, 26, 0.15);
+            border-top: 2px solid #0a0e1a;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Message */
+        .msg {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 400;
+            margin: 10px 0 2px;
+            display: none;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .msg.show {
+            display: block;
+            animation: fade 0.3s ease;
+        }
+
+        .msg.error {
+            background: rgba(255, 50, 50, 0.06);
+            border: 1px solid rgba(255, 50, 50, 0.08);
+            color: #ff6b6b;
+        }
+
+        .msg.success {
+            background: rgba(0, 255, 150, 0.04);
+            border: 1px solid rgba(0, 255, 150, 0.06);
+            color: #00ff88;
+        }
+
+        @keyframes fade {
+            0% { opacity: 0; transform: translateY(-4px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Admin Note */
+        .admin-note {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px dashed rgba(255, 255, 255, 0.03);
+            text-align: center;
+        }
+
+        .admin-note p {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.04);
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .header .brand h1 { font-size: 1rem; }
+            .header .brand .logo { font-size: 1.5rem; }
+            .page-title h2 { font-size: 1.1rem; }
+            .platform-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .platform-item { padding: 10px 6px; }
+            .platform-item .logo { width: 32px; height: 32px; }
+            .platform-item .name { font-size: 0.5rem; }
+            .form-group input { font-size: 0.8rem; padding: 10px 14px; }
+            .btn-connect { font-size: 0.85rem; padding: 14px; }
+            .selected-display { flex-direction: column; gap: 4px; text-align: center; }
+        }
+
+        @media (max-width: 380px) {
+            .platform-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .platform-item { padding: 8px 4px; }
+            .platform-item .logo { width: 28px; height: 28px; }
+            .platform-item .name { font-size: 0.45rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div id="particles"></div>
+
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <span class="logo">🎣</span>
+                <h1>ICE <span>FISHING</span></h1>
+            </div>
+            <a href="dashboard.html" class="back-btn">← Back</a>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h2>🔗 Connect Profile</h2>
+            <p>Select your platform and enter your account details</p>
+        </div>
+
+        <!-- Secure Badge -->
+        <div class="secure-badge">
+            <span class="icon">🛡️</span>
+            <span class="text"><strong>Secure Connection</strong> — Your data is encrypted and safe</span>
+        </div>
+
+        <!-- Select Platform -->
+        <span class="section-label">📱 Select Platform</span>
+
+        <div class="platform-grid" id="platformGrid">
+            <!-- Platforms loaded by JavaScript -->
+        </div>
+
+        <!-- Selected Display -->
+        <div class="selected-display">
+            <span class="label">Selected:</span>
+            <span class="value" id="selectedDisplay">None</span>
+        </div>
+
+        <!-- Form -->
+        <form id="connectForm" onsubmit="return handleConnect(event)">
+
+            <div class="form-group">
+                <label>🏷️ Site Name <span class="required">*</span></label>
+                <input type="text" id="siteName" placeholder="Select a platform or type manually" required />
+                <div class="hint">Auto-fills when you select a platform — you can also type manually</div>
+            </div>
+
+            <div class="form-group">
+                <label>👤 Username / Account ID <span class="required">*</span></label>
+                <input type="text" id="username" placeholder="Enter your account ID / Username" required />
+                <div class="hint">This is the username you use on the selected platform</div>
+            </div>
+
+            <div id="msg" class="msg">
+                <span id="msgText"></span>
+            </div>
+
+            <button type="submit" class="btn-connect" id="connectBtn">
+                🔗 Connect Platform
+            </button>
+        </form>
+
+        <div class="admin-note">
+            <p>🛠️ Your connected platforms will be visible to admin for verification</p>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // PARTICLES
+        // ============================================================
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const ice = ['❄️', '✦', '❄️', '✦'];
+            const fish = ['🐟', '🐠', '🐡'];
+
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                const isFish = Math.random() < 0.3;
+                el.className = 'particle ' + (isFish ? 'fish' : 'ice');
+                el.textContent = isFish ?
+                    fish[Math.floor(Math.random() * fish.length)] :
+                    ice[Math.floor(Math.random() * ice.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 0.8 + 0.5) + 'rem';
+                el.style.animationDuration = (Math.random() * 18 + 12) + 's';
+                el.style.animationDelay = (Math.random() * 20) + 's';
+                container.appendChild(el);
+            }
+        })();
+
+        // ============================================================
+        // FIREBASE
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================================
+        // PLATFORM LIST
+        // ============================================================
+        const platforms = [
+            { id: '1xbet', name: '1xBet', logo: '1xbet.png' },
+            { id: '22bet', name: '22Bet', logo: '22bet.png' },
+            { id: 'bet365', name: 'Bet365', logo: 'bet365.png' },
+            { id: 'betway', name: 'Betway', logo: 'betway.png' },
+            { id: 'dafabet', name: 'Dafabet', logo: 'dafabet.png' },
+            { id: 'leon', name: 'Leon', logo: 'leon.png' },
+            { id: 'megapari', name: 'Megapari', logo: 'megapari.png' },
+            { id: 'mostbet', name: 'Mostbet', logo: 'mostbet.png' },
+            { id: 'others', name: 'Others', logo: 'others.png' },
+            { id: 'parimatch', name: 'Parimatch', logo: 'parimatch.png' },
+            { id: 'pinup', name: 'Pin-Up', logo: 'pinup.png' },
+            { id: 'stake', name: 'Stake', logo: 'stake.png' },
+            { id: 'vbet', name: 'VBET', logo: 'vbet.png' }
+        ];
+
+        let selectedPlatform = null;
+
+        // ============================================================
+        // RENDER PLATFORMS
+        // ============================================================
+        function renderPlatforms() {
+            const grid = document.getElementById('platformGrid');
+
+            if (!grid) {
+                console.error('Platform grid not found!');
+                return;
+            }
+
+            let html = '';
+            platforms.forEach((p) => {
+                html += `
+                    <div class="platform-item" data-id="${p.id}" onclick="selectPlatform('${p.id}')">
+                        <div class="logo">
+                            <img src="assets/logos/${p.logo}" alt="${p.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                            <span class="fallback" style="display:none;">${p.name.substring(0, 3)}</span>
+                        </div>
+                        <div class="name">${p.name}</div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+            console.log('Platforms rendered:', platforms.length);
+        }
+
+        // ============================================================
+        // SELECT PLATFORM
+        // ============================================================
+        function selectPlatform(id) {
+            selectedPlatform = id;
+
+            // Update UI
+            document.querySelectorAll('.platform-item').forEach((el) => {
+                el.classList.remove('selected');
+                if (el.dataset.id === id) {
+                    el.classList.add('selected');
+                }
+            });
+
+            const platform = platforms.find(p => p.id === id);
+            document.getElementById('selectedDisplay').textContent = platform ? platform.name : 'None';
+
+            // Auto-fill site name
+            if (platform && platform.name !== 'Others') {
+                document.getElementById('siteName').value = platform.name;
+            } else {
+                document.getElementById('siteName').value = '';
+                document.getElementById('siteName').placeholder = 'Enter site name';
+            }
+        }
+
+        // ============================================================
+        // CONNECT PLATFORM
+        // ============================================================
+        async function handleConnect(e) {
+            e.preventDefault();
+
+            const msg = document.getElementById('msg');
+            const msgText = document.getElementById('msgText');
+            const connectBtn = document.getElementById('connectBtn');
+
+            const siteName = document.getElementById('siteName').value.trim();
+            const username = document.getElementById('username').value.trim();
+
+            if (!selectedPlatform) {
+                msgText.textContent = 'Please select a platform first.';
+                msg.className = 'msg show error';
+                return;
+            }
+
+            if (!siteName || !username) {
+                msgText.textContent = 'Please fill in Site Name and Username.';
+                msg.className = 'msg show error';
+                return;
+            }
+
+            const platform = platforms.find(p => p.id === selectedPlatform);
+
+            connectBtn.disabled = true;
+            connectBtn.innerHTML = '<span class="loader"></span> Connecting...';
+
+            try {
+                const user = auth.currentUser;
+
+                if (!user) {
+                    msgText.textContent = 'Please login first.';
+                    msg.className = 'msg show error';
+                    connectBtn.disabled = false;
+                    connectBtn.innerHTML = '🔗 Connect Platform';
+                    return;
+                }
+
+                // Save to Firebase
+                await db.collection('userConnections').add({
+                    userId: user.uid,
+                    userName: user.displayName || 'Player',
+                    userEmail: user.email || '',
+                    platformId: selectedPlatform,
+                    platformName: platform ? platform.name : 'Unknown',
+                    siteName: siteName,
+                    username: username,
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                msgText.textContent = '✅ Platform connected successfully!';
+                msg.className = 'msg show success';
+
+                // Clear form
+                document.getElementById('siteName').value = '';
+                document.getElementById('username').value = '';
+
+                // Reset selection
+                document.querySelectorAll('.platform-item').forEach((el) => {
+                    el.classList.remove('selected');
+                });
+                document.getElementById('selectedDisplay').textContent = 'None';
+                selectedPlatform = null;
+
+                connectBtn.disabled = false;
+                connectBtn.innerHTML = '🔗 Connect Platform';
+
+                setTimeout(() => {
+                    msg.className = 'msg';
+                }, 5000);
+
+            } catch (error) {
+                console.error('Error connecting platform:', error);
+                msgText.textContent = '❌ Connection failed: ' + error.message;
+                msg.className = 'msg show error';
+                connectBtn.disabled = false;
+                connectBtn.innerHTML = '🔗 Connect Platform';
+            }
+        }
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
+        auth.onAuthStateChanged((user) => {
+            renderPlatforms();
+            
+            if (!user) {
+                console.log('User not logged in - showing platforms only');
+            }
+        });
+
+        // Render on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPlatforms();
+        });
+
+        // Fallback render
+        setTimeout(function() {
+            const grid = document.getElementById('platformGrid');
+            if (grid && grid.children.length === 0) {
+                renderPlatforms();
+            }
+        }, 1000);
+    </script>
+
+</body>
+</html>
