@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Package Payment - ICE FISHING</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #080c18;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 180, 255, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 45%),
+                #080c18;
+        }
+
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            user-select: none;
+            animation: fall linear infinite;
+        }
+        .particle.ice {
+            color: rgba(100, 200, 255, 0.05);
+            font-size: 0.9rem;
+        }
+        .particle.fish {
+            color: rgba(77, 201, 246, 0.04);
+            font-size: 1rem;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.05; }
+            90% { opacity: 0.05; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 520px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-top: 8px;
+        }
+
+        .header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .brand .logo {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 20px rgba(77, 201, 246, 0.15));
+        }
+
+        .header .brand h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header .brand h1 span {
+            color: #ffffff;
+        }
+
+        .header .back-btn {
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+        }
+
+        .page-title {
+            margin-bottom: 20px;
+        }
+
+        .page-title h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .page-title p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .order-summary {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+
+        .order-summary .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.85rem;
+        }
+
+        .order-summary .row .label {
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .order-summary .row .value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .order-summary .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.03);
+            margin: 8px 0;
+        }
+
+        /* Region Badge */
+        .region-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .region-badge.bangladesh {
+            background: rgba(0, 212, 170, 0.08);
+            color: #00d4aa;
+            border: 1px solid rgba(0, 212, 170, 0.05);
+        }
+
+        .region-badge.india {
+            background: rgba(255, 215, 0, 0.08);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.05);
+        }
+
+        .region-badge.worldwide {
+            background: rgba(77, 201, 246, 0.08);
+            color: #4dc9f6;
+            border: 1px solid rgba(77, 201, 246, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.15);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .form-group label .required {
+            color: #ff6b6b;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: #ffffff;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: rgba(77, 201, 246, 0.15);
+            background: rgba(77, 201, 246, 0.02);
+        }
+
+        .form-group .hint {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.04);
+            margin-top: 4px;
+        }
+
+        .file-upload {
+            border: 2px dashed rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: rgba(77, 201, 246, 0.08);
+            background: rgba(77, 201, 246, 0.02);
+        }
+
+        .file-upload .icon {
+            font-size: 2rem;
+            opacity: 0.1;
+        }
+
+        .file-upload p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.06);
+            margin-top: 4px;
+        }
+
+        .file-upload .file-name {
+            font-size: 0.65rem;
+            color: #4dc9f6;
+            margin-top: 6px;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4dc9f6, #2b8fc4);
+            color: #080c18;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(77, 201, 246, 0.2);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.97);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-submit .loader {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(8, 12, 24, 0.15);
+            border-top: 2px solid #080c18;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .upload-progress {
+            display: none;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        .upload-progress .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4dc9f6, #ffd700);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+        }
+
+        .upload-progress .text {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.06);
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .admin-note {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px dashed rgba(255, 255, 255, 0.03);
+            text-align: center;
+        }
+
+        .admin-note p {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.04);
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .header .brand h1 { font-size: 1rem; }
+            .header .brand .logo { font-size: 1.5rem; }
+            .page-title h2 { font-size: 1.1rem; }
+            .form-group input { font-size: 0.8rem; padding: 10px 14px; }
+            .btn-submit { font-size: 0.85rem; padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div id="particles"></div>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="brand">
+                <span class="logo">🎣</span>
+                <h1>ICE <span>FISHING</span></h1>
+            </div>
+            <a href="#" class="back-btn" id="backBtn">← Back</a>
+        </div>
+
+        <div class="page-title">
+            <h2>📦 Submit Package Payment</h2>
+            <p>Fill in the details below to submit your payment</p>
+        </div>
+
+        <div class="order-summary" id="orderSummary">
+            <div class="row">
+                <span class="label">📦 Package</span>
+                <span class="value" id="pkgName">Loading...</span>
+            </div>
+            <div class="row">
+                <span class="label">⏱ Duration</span>
+                <span class="value" id="pkgDuration">Loading...</span>
+            </div>
+            <div class="divider"></div>
+            <div class="row">
+                <span class="label">🌍 Region</span>
+                <span class="value" id="regionDisplay">Loading...</span>
+            </div>
+            <div class="row">
+                <span class="label">💳 Payment Method</span>
+                <span class="value" id="paymentMethod">Loading...</span>
+            </div>
+            <div class="row">
+                <span class="label">💰 Total</span>
+                <span class="value" id="totalAmount">$0.00</span>
+            </div>
+        </div>
+
+        <form id="paymentForm" onsubmit="submitPayment(event)">
+
+            <!-- Region Badge -->
+            <div id="regionBadgeContainer" style="text-align:center; margin-bottom:16px;">
+                <span class="region-badge" id="regionBadge">🌍 Worldwide</span>
+            </div>
+
+            <!-- Dynamic Field: Payment ID (Number / UPI ID / Wallet Address) -->
+            <div class="form-group" id="paymentIdGroup">
+                <label id="paymentIdLabel">📱 Your Payment/Cash Out Number <span class="required">*</span></label>
+                <input type="text" id="paymentId" placeholder="Enter your payment number" required />
+                <div class="hint" id="paymentIdHint">Enter the number you used to send payment</div>
+            </div>
+
+            <!-- User Name -->
+            <div class="form-group">
+                <label>👤 Your Name <span class="required">*</span></label>
+                <input type="text" id="userName" placeholder="Enter your full name" required />
+            </div>
+
+            <!-- Transaction ID -->
+            <div class="form-group">
+                <label>🔑 Transaction ID / UTR <span class="required">*</span></label>
+                <input type="text" id="transactionId" placeholder="Enter transaction ID or UTR number" required />
+                <div class="hint" id="transactionHint">Your transaction reference number from payment app</div>
+            </div>
+
+            <!-- Screenshot -->
+            <div class="form-group">
+                <label>📸 Screenshot <span class="required">*</span></label>
+                <div class="file-upload" onclick="document.getElementById('screenshotInput').click()">
+                    <div class="icon">📷</div>
+                    <p>Click to upload screenshot (Max 5MB)</p>
+                    <div class="file-name" id="fileName">No file selected</div>
+                    <input type="file" id="screenshotInput" accept="image/*" onchange="handleFileSelect(event)" />
+                </div>
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="bar" id="uploadBar"></div>
+                    <div class="text" id="uploadText">Uploading...</div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                📤 Submit Payment
+            </button>
+        </form>
+
+        <div class="admin-note">
+            <p>🛠️ Your submission will be reviewed by admin. You will receive your license key after approval.</p>
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // PARTICLES
+        // ============================================================
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const ice = ['❄️', '✦', '❄️', '✦'];
+            const fish = ['🐟', '🐠', '🐡'];
+
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                const isFish = Math.random() < 0.3;
+                el.className = 'particle ' + (isFish ? 'fish' : 'ice');
+                el.textContent = isFish ?
+                    fish[Math.floor(Math.random() * fish.length)] :
+                    ice[Math.floor(Math.random() * ice.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 0.8 + 0.5) + 'rem';
+                el.style.animationDuration = (Math.random() * 18 + 12) + 's';
+                el.style.animationDelay = (Math.random() * 20) + 's';
+                container.appendChild(el);
+            }
+        })();
+
+        // ============================================================
+        // FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================================
+        // CLOUDINARY CONFIG - YOUR CREDENTIALS
+        // ============================================================
+        const CLOUDINARY = {
+            cloudName: 'dw72p48ir',
+            uploadPreset: 'b76f4128-e1de-4723-bf3b-982d002f7b43',
+            folder: 'revo_fixer_uploads',
+            apiSecret: '2rncqKY9SHtAe1V8hHnpL35u3Kk'
+        };
+
+        let selectedFile = null;
+        let selectedPackage = null;
+        let paymentMethodName = '';
+        let selectedRegion = '';
+
+        // ============================================================
+        // REGION CONFIGURATIONS
+        // ============================================================
+        const REGION_CONFIG = {
+            bangladesh: {
+                badge: '🇧🇩 Bangladesh',
+                badgeClass: 'bangladesh',
+                label: '📱 Your bKash/Nagad/Rocket Number',
+                placeholder: 'Enter your bKash/Nagad/Rocket number',
+                hint: 'Enter the mobile number you used to send payment'
+            },
+            india: {
+                badge: '🇮🇳 India',
+                badgeClass: 'india',
+                label: '📱 Your UPI ID',
+                placeholder: 'Enter your UPI ID (e.g., name@upi)',
+                hint: 'Enter your Google Pay / PhonePe / Paytm UPI ID'
+            },
+            worldwide: {
+                badge: '🌍 Worldwide',
+                badgeClass: 'worldwide',
+                label: '🔑 Your Wallet Address',
+                placeholder: 'Enter your crypto wallet address',
+                hint: 'Enter the wallet address you sent crypto from'
+            }
+        };
+
+        // ============================================================
+        // GET URL PARAMETERS
+        // ============================================================
+        function getPackageId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('package');
+        }
+
+        function getMethod() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('method');
+        }
+
+        function getRegion() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('region') || 'worldwide';
+        }
+
+        function getReferrer() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('from') || 'dashboard';
+        }
+
+        function setBackButton() {
+            const backBtn = document.getElementById('backBtn');
+            const from = getReferrer();
+            const pkgId = getPackageId();
+            const method = getMethod();
+            const region = getRegion();
+
+            if (from === 'login') {
+                backBtn.href = 'index.html';
+            } else {
+                backBtn.href = 'payment-final.html?package=' + encodeURIComponent(pkgId) + '&method=' + encodeURIComponent(method) + '&region=' + encodeURIComponent(region) +
+                    '&from=' + encodeURIComponent(from);
+            }
+        }
+
+        // ============================================================
+        // UPDATE FORM BASED ON REGION
+        // ============================================================
+        function updateFormForRegion(region) {
+            const config = REGION_CONFIG[region] || REGION_CONFIG.worldwide;
+            selectedRegion = region;
+
+            // Update badge
+            const badge = document.getElementById('regionBadge');
+            badge.textContent = config.badge;
+            badge.className = 'region-badge ' + config.badgeClass;
+
+            // Update payment ID field
+            document.getElementById('paymentIdLabel').textContent = config.label + ' *';
+            document.getElementById('paymentId').placeholder = config.placeholder;
+            document.getElementById('paymentIdHint').textContent = config.hint;
+
+            // Update region display in order summary
+            const regionNames = {
+                bangladesh: '🇧🇩 Bangladesh',
+                india: '🇮🇳 India',
+                worldwide: '🌍 Worldwide'
+            };
+            document.getElementById('regionDisplay').textContent = regionNames[region] || 'Worldwide';
+        }
+
+        // ============================================================
+        // FILE HANDLER
+        // ============================================================
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('❌ File is too large! Maximum size is 5MB.');
+                    event.target.value = '';
+                    return;
+                }
+                selectedFile = file;
+                document.getElementById('fileName').textContent = file.name + ' (' + (file.size / 1024).toFixed(0) +
+                    'KB)';
+                document.getElementById('fileName').style.color = '#00ff88';
+            }
+        }
+
+        // ============================================================
+        // LOAD PACKAGE DETAILS
+        // ============================================================
+        function loadPackageDetails() {
+            const pkgId = getPackageId();
+            const method = getMethod();
+            const region = getRegion();
+
+            if (!pkgId || !method) {
+                document.getElementById('pkgName').textContent = 'Invalid selection';
+                document.getElementById('pkgDuration').textContent = '-';
+                document.getElementById('paymentMethod').textContent = '-';
+                document.getElementById('totalAmount').textContent = '$0.00';
+                return;
+            }
+
+            // Update form for region
+            updateFormForRegion(region);
+
+            db.collection('packagePrices').doc('packages').get().then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    const pkg = data[pkgId];
+
+                    if (pkg) {
+                        selectedPackage = { id: pkgId, ...pkg };
+
+                        const inrAmount = pkg.inr || 0;
+                        const bdtAmount = Math.round(inrAmount * 1.4);
+
+                        let totalDisplay = '$' + (pkg.usdt || 0).toFixed(2) + ' USDT';
+                        if (region === 'bangladesh') {
+                            totalDisplay = '৳' + bdtAmount.toLocaleString() + ' BDT';
+                        } else if (region === 'india') {
+                            totalDisplay = '₹' + inrAmount.toLocaleString() + ' INR';
+                        }
+
+                        const methodNames = {
+                            bkash: 'Bkash',
+                            nagad: 'Nagad',
+                            rocket: 'Rocket',
+                            paytm: 'Paytm',
+                            upi: 'UPI',
+                            phonepe: 'PhonePe',
+                            gpay: 'GPay',
+                            btc: 'Bitcoin (BTC)',
+                            eth: 'Ethereum (ETH)',
+                            usdt: 'Tether (USDT)',
+                            usdc: 'USD Coin (USDC)',
+                            ltc: 'Litecoin (LTC)',
+                            doge: 'Dogecoin (DOGE)',
+                            sol: 'Solana (SOL)',
+                            bnb: 'BNB',
+                            trx: 'Tron (TRX)'
+                        };
+
+                        paymentMethodName = methodNames[method] || method.toUpperCase();
+
+                        document.getElementById('pkgName').textContent = pkg.name || 'Package';
+                        document.getElementById('pkgDuration').textContent = pkg.duration || '-';
+                        document.getElementById('paymentMethod').textContent = paymentMethodName;
+                        document.getElementById('totalAmount').textContent = totalDisplay;
+                    }
+                }
+            }).catch((error) => {
+                console.error('Error loading package:', error);
+            });
+        }
+
+        // ============================================================
+        // CLOUDINARY UPLOAD WITH PROGRESS
+        // ============================================================
+        async function uploadToCloudinary(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY.uploadPreset);
+            formData.append('folder', CLOUDINARY.folder);
+
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('uploadBar');
+            const progressText = document.getElementById('uploadText');
+            progressDiv.style.display = 'block';
+
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+
+                xhr.upload.addEventListener('progress', (event) => {
+                    if (event.lengthComputable) {
+                        const percent = Math.round((event.loaded / event.total) * 100);
+                        progressBar.style.width = percent + '%';
+                        progressText.textContent = 'Uploading... ' + percent + '%';
+                    }
+                });
+
+                xhr.onload = function() {
+                    progressText.textContent = '✅ Upload complete!';
+                    if (xhr.status === 200) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            resolve(data.secure_url);
+                        } catch (e) {
+                            reject(new Error('Invalid response from Cloudinary'));
+                        }
+                    } else {
+                        reject(new Error('Upload failed: ' + xhr.status));
+                    }
+                    setTimeout(() => {
+                        progressDiv.style.display = 'none';
+                        progressBar.style.width = '0%';
+                    }, 1500);
+                };
+
+                xhr.onerror = function() {
+                    progressText.textContent = '❌ Upload failed!';
+                    reject(new Error('Network error'));
+                    setTimeout(() => {
+                        progressDiv.style.display = 'none';
+                        progressBar.style.width = '0%';
+                    }, 2000);
+                };
+
+                xhr.open('POST', 'https://api.cloudinary.com/v1_1/' + CLOUDINARY.cloudName + '/image/upload');
+                xhr.send(formData);
+            });
+        }
+
+        // ============================================================
+        // SUBMIT PAYMENT
+        // ============================================================
+        async function submitPayment(event) {
+            event.preventDefault();
+
+            const paymentId = document.getElementById('paymentId').value.trim();
+            const userName = document.getElementById('userName').value.trim();
+            const transactionId = document.getElementById('transactionId').value.trim();
+
+            if (!paymentId || !userName || !transactionId) {
+                alert('❌ Please fill in all fields.');
+                return;
+            }
+
+            if (!selectedFile) {
+                alert('❌ Please upload a screenshot.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loader"></span> Uploading Screenshot...';
+
+            try {
+                let screenshotUrl = '';
+                try {
+                    screenshotUrl = await uploadToCloudinary(selectedFile);
+                    console.log('✅ Screenshot uploaded:', screenshotUrl);
+                } catch (uploadError) {
+                    console.error('Cloudinary upload error:', uploadError);
+                    const reader = new FileReader();
+                    screenshotUrl = await new Promise((resolve) => {
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(selectedFile);
+                    });
+                    alert('⚠️ Cloudinary upload failed. Using fallback method.');
+                }
+
+                submitBtn.innerHTML = '<span class="loader"></span> Submitting...';
+
+                const user = auth.currentUser;
+                const pkgId = getPackageId();
+                const method = getMethod();
+                const region = getRegion();
+
+                // Determine the field name based on region
+                let paymentIdField = 'userNumber';
+                let paymentIdLabel = 'Payment Number';
+
+                if (region === 'india') {
+                    paymentIdField = 'upiId';
+                    paymentIdLabel = 'UPI ID';
+                } else if (region === 'worldwide') {
+                    paymentIdField = 'walletAddress';
+                    paymentIdLabel = 'Wallet Address';
+                } else {
+                    paymentIdField = 'userNumber';
+                    paymentIdLabel = 'Payment Number';
+                }
+
+                const docRef = await db.collection('paymentRequests').add({
+                    userId: user ? user.uid : 'guest',
+                    userName: userName,
+                    [paymentIdField]: paymentId,
+                    paymentIdLabel: paymentIdLabel,
+                    userEmail: user ? user.email : '',
+                    packageName: selectedPackage ? selectedPackage.name : '',
+                    packageId: pkgId || '',
+                    paymentMethod: paymentMethodName,
+                    paymentRegion: region || '',
+                    transactionId: transactionId,
+                    screenshot: screenshotUrl,
+                    status: 'pending',
+                    licenseKey: '',
+                    telegramLink: '',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                sessionStorage.setItem('pendingRequestId', docRef.id);
+                window.location.href = 'payment-status.html?from=submit';
+
+            } catch (error) {
+                console.error('Error submitting payment:', error);
+                alert('❌ Error submitting payment: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '📤 Submit Payment';
+            }
+        }
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
+        auth.onAuthStateChanged((user) => {
+            setBackButton();
+            loadPackageDetails();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Package Payment - ICE FISHING</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 150, 255, 0.05) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 45%),
+                #0a0e1a;
+        }
+
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            user-select: none;
+            animation: fall linear infinite;
+        }
+        .particle.ice {
+            color: rgba(100, 200, 255, 0.04);
+            font-size: 0.9rem;
+        }
+        .particle.fish {
+            color: rgba(77, 201, 246, 0.03);
+            font-size: 1rem;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.04; }
+            90% { opacity: 0.04; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 520px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-top: 8px;
+        }
+
+        .header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .brand .logo {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 20px rgba(77, 201, 246, 0.15));
+        }
+
+        .header .brand h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header .brand h1 span {
+            color: #ffffff;
+        }
+
+        .header .back-btn {
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+        }
+
+        .page-title {
+            margin-bottom: 20px;
+        }
+
+        .page-title h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .page-title p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .order-summary {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+
+        .order-summary .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.85rem;
+        }
+
+        .order-summary .row .label {
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .order-summary .row .value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .order-summary .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.03);
+            margin: 8px 0;
+        }
+
+        .payment-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 24px 22px;
+            margin-bottom: 16px;
+        }
+
+        .payment-card .method-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .payment-card .method-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .payment-card .method-desc {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.12);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .payment-card .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.03);
+            margin: 12px 0;
+        }
+
+        .payment-card .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.8rem;
+        }
+
+        .payment-card .detail-row .label {
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .payment-card .detail-row .value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .payment-card .address-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin: 8px 0;
+            font-size: 0.7rem;
+            word-break: break-all;
+        }
+
+        .payment-card .address-box .address {
+            color: #4dc9f6;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .payment-card .address-box .label {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.06);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .payment-card .address-box .instruction {
+            color: #d4a017;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4dc9f6, #2b8fc4);
+            color: #080c18;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(77, 201, 246, 0.2);
+        }
+
+        .btn-confirm:active {
+            transform: scale(0.97);
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .admin-note {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px dashed rgba(255, 255, 255, 0.03);
+            text-align: center;
+        }
+
+        .admin-note p {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.04);
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .header .brand h1 { font-size: 1rem; }
+            .header .brand .logo { font-size: 1.5rem; }
+            .page-title h2 { font-size: 1.1rem; }
+            .payment-card { padding: 18px 16px; }
+            .payment-card .method-icon { font-size: 2.5rem; }
+            .payment-card .method-name { font-size: 1rem; }
+            .order-summary .row { font-size: 0.75rem; }
+            .btn-confirm { font-size: 0.85rem; padding: 14px; }
+            .payment-card .address-box .address { font-size: 0.65rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div id="particles"></div>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="brand">
+                <span class="logo">🎣</span>
+                <h1>ICE <span>FISHING</span></h1>
+            </div>
+            <a href="#" class="back-btn" id="backBtn">← Back</a>
+        </div>
+
+        <div class="page-title">
+            <h2>📦 Package Payment</h2>
+            <p>Complete payment for this package using the details below</p>
+        </div>
+
+        <div class="order-summary" id="orderSummary">
+            <div class="row">
+                <span class="label">📦 Package Only</span>
+                <span class="value" id="pkgName">Loading...</span>
+            </div>
+            <div class="row">
+                <span class="label">⏱ Duration</span>
+                <span class="value" id="pkgDuration">Loading...</span>
+            </div>
+            <div class="divider"></div>
+            <div class="row">
+                <span class="label">💰 Total</span>
+                <span class="value" id="totalAmount">$0.00</span>
+            </div>
+        </div>
+
+        <div class="payment-card" id="paymentCard">
+            <div id="paymentContent">
+                <div style="text-align:center; padding:20px; color:rgba(255,255,255,0.05);">
+                    <p>Loading payment details...</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-confirm" id="confirmBtn" onclick="confirmPayment()">
+            ✅ I Have Completed the Payment
+        </button>
+
+        <div class="admin-note">
+            <p>🛠️ Payment details are managed by admin from Firebase Console</p>
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script>
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const ice = ['❄️', '✦', '❄️', '✦'];
+            const fish = ['🐟', '🐠', '🐡'];
+
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                const isFish = Math.random() < 0.3;
+                el.className = 'particle ' + (isFish ? 'fish' : 'ice');
+                el.textContent = isFish ?
+                    fish[Math.floor(Math.random() * fish.length)] :
+                    ice[Math.floor(Math.random() * ice.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 0.8 + 0.5) + 'rem';
+                el.style.animationDuration = (Math.random() * 18 + 12) + 's';
+                el.style.animationDelay = (Math.random() * 20) + 's';
+                container.appendChild(el);
+            }
+        })();
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let selectedPackage = null;
+        let fromPage = '';
+        let selectedMethod = '';
+        let selectedRegion = '';
+        let usdtToInr = 85.0;
+
+        function getPackageId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('package');
+        }
+
+        function getMethod() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('method');
+        }
+
+        function getRegion() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('region') || 'worldwide';
+        }
+
+        function getReferrer() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('from') || 'dashboard';
+        }
+
+        function setBackButton() {
+            const backBtn = document.getElementById('backBtn');
+            fromPage = getReferrer();
+            const pkgId = getPackageId();
+
+            if (fromPage === 'login') {
+                backBtn.href = 'index.html';
+            } else {
+                backBtn.href = 'payment-details.html?package=' + encodeURIComponent(pkgId) + '&region=' + encodeURIComponent(getRegion()) + '&from=' + encodeURIComponent(fromPage);
+            }
+        }
+
+        async function fetchUSDTRate() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=inr');
+                const data = await response.json();
+                if (data && data.tether && data.tether.inr) {
+                    usdtToInr = data.tether.inr;
+                }
+            } catch (error) { console.error('Error fetching USDT rate:', error); }
+        }
+
+        function getPaymentDetails(method, pkg) {
+            const inrAmount = pkg.inr || 0;
+            const bdtAmount = Math.round(inrAmount * 1.4);
+            const usdtAmount = pkg.usdt || (inrAmount / usdtToInr);
+
+            const details = {
+                icon: '💳',
+                name: 'Payment',
+                desc: 'Complete your payment',
+                instruction: 'Please complete your payment',
+                address: 'N/A',
+                amount: '$0.00'
+            };
+
+            const methodMap = {
+                bkash: { icon: '💚', name: 'Bkash', desc: 'Send payment via bKash mobile banking',
+                    instruction: 'Send Money', address: '017XXXXXXXX', amount: '৳' + bdtAmount.toLocaleString() },
+                nagad: { icon: '🟠', name: 'Nagad', desc: 'Send payment via Nagad mobile banking',
+                    instruction: 'Send Money', address: '017XXXXXXXX', amount: '৳' + bdtAmount.toLocaleString() },
+                rocket: { icon: '🚀', name: 'Rocket', desc: 'Send payment via Rocket mobile banking',
+                    instruction: 'Send Money', address: '017XXXXXXXX', amount: '৳' + bdtAmount.toLocaleString() },
+                paytm: { icon: '💳', name: 'Paytm', desc: 'Send payment via Paytm', instruction: 'Pay',
+                    address: 'paytm@upi', amount: '₹' + inrAmount.toLocaleString() },
+                upi: { icon: '🇮🇳', name: 'UPI', desc: 'Send payment via UPI', instruction: 'Pay',
+                    address: 'merchant@upi', amount: '₹' + inrAmount.toLocaleString() },
+                phonepe: { icon: '📱', name: 'PhonePe', desc: 'Send payment via PhonePe', instruction: 'Pay',
+                    address: 'phonepe@upi', amount: '₹' + inrAmount.toLocaleString() },
+                gpay: { icon: '💚', name: 'GPay (Google Pay)', desc: 'Send payment via Google Pay',
+                    instruction: 'Pay', address: 'gpay@upi', amount: '₹' + inrAmount.toLocaleString() },
+                btc: { icon: '₿', name: 'Bitcoin (BTC)', desc: 'Send BTC to the address below',
+                    instruction: 'Send Crypto', address: 'bc1q7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: (usdtAmount / 0.000002).toFixed(8) + ' BTC' },
+                eth: { icon: '⟠', name: 'Ethereum (ETH)', desc: 'Send ETH to the address below',
+                    instruction: 'Send Crypto', address: '0x7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: (usdtAmount / 0.00004).toFixed(6) + ' ETH' },
+                usdt: { icon: '🪙', name: 'Tether (USDT)', desc: 'Send USDT (ERC20/BEP20/TRC20)',
+                    instruction: 'Send Crypto', address: '0x7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: usdtAmount.toFixed(2) + ' USDT' },
+                usdc: { icon: '💵', name: 'USD Coin (USDC)', desc: 'Send USDC (ERC20/BEP20)',
+                    instruction: 'Send Crypto', address: '0x7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: usdtAmount.toFixed(2) + ' USDC' },
+                ltc: { icon: 'Ł', name: 'Litecoin (LTC)', desc: 'Send LTC to the address below',
+                    instruction: 'Send Crypto', address: 'ltc1q7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: (usdtAmount / 0.002).toFixed(6) + ' LTC' },
+                doge: { icon: '🐕', name: 'Dogecoin (DOGE)', desc: 'Send DOGE to the address below',
+                    instruction: 'Send Crypto', address: 'D7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: (usdtAmount / 0.00008).toFixed(0) + ' DOGE' },
+                sol: { icon: '☀️', name: 'Solana (SOL)', desc: 'Send SOL to the address below',
+                    instruction: 'Send Crypto', address: '7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: (usdtAmount / 0.003).toFixed(6) + ' SOL' },
+                bnb: { icon: '🔶', name: 'BNB', desc: 'Send BNB (BEP20) to the address below',
+                    instruction: 'Send Crypto', address: '0x7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: (usdtAmount / 0.0006).toFixed(6) + ' BNB' },
+                trx: { icon: '🔴', name: 'Tron (TRX)', desc: 'Send TRX (TRC20) to the address below',
+                    instruction: 'Send Crypto', address: 'T7a3d5f9e2b1c8a4d6f9e3b7c2d1a5f8e9b3c7d1a',
+                    amount: (usdtAmount / 0.002).toFixed(0) + ' TRX' }
+            };
+
+            const regionMap = {
+                bangladesh: { bkash: 'Bkash', nagad: 'Nagad', rocket: 'Rocket' },
+                india: { paytm: 'Paytm', upi: 'UPI', phonepe: 'PhonePe', gpay: 'GPay' },
+                worldwide: { btc: 'BTC', eth: 'ETH', usdt: 'USDT', usdc: 'USDC', ltc: 'LTC', doge: 'DOGE', sol: 'SOL',
+                    bnb: 'BNB', trx: 'TRX' }
+            };
+
+            const regionMethodMap = regionMap[selectedRegion] || {};
+            if (methodMap[method]) {
+                return methodMap[method];
+            }
+
+            return details;
+        }
+
+        function renderPaymentDetails() {
+            const pkgId = getPackageId();
+            selectedMethod = getMethod();
+            selectedRegion = getRegion();
+
+            if (!pkgId || !selectedMethod) {
+                document.getElementById('paymentContent').innerHTML =
+                    `<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.05);"><p>❌ Invalid payment request.</p></div>`;
+                return;
+            }
+
+            db.collection('packagePrices').doc('packages').get().then(async (doc) => {
+                await fetchUSDTRate();
+
+                if (doc.exists) {
+                    const data = doc.data();
+                    const pkg = data[pkgId];
+
+                    if (pkg) {
+                        selectedPackage = { id: pkgId, ...pkg };
+
+                        const inrAmount = pkg.inr || 0;
+                        const bdtAmount = Math.round(inrAmount * 1.4);
+
+                        let totalDisplay = '$' + (pkg.usdt || 0).toFixed(2) + ' USDT';
+                        if (selectedRegion === 'bangladesh') {
+                            totalDisplay = '৳' + bdtAmount.toLocaleString() + ' BDT';
+                        } else if (selectedRegion === 'india') {
+                            totalDisplay = '₹' + inrAmount.toLocaleString() + ' INR';
+                        }
+
+                        document.getElementById('pkgName').textContent = pkg.name || 'Package';
+                        document.getElementById('pkgDuration').textContent = pkg.duration || '-';
+                        document.getElementById('totalAmount').textContent = totalDisplay;
+
+                        const details = getPaymentDetails(selectedMethod, pkg);
+
+                        let instructionsHtml = '';
+                        const steps = [
+                            `1. Open your ${details.name} app`,
+                            `2. Select "${details.instruction}"`,
+                            `3. Enter the ${details.name} number/ID below`,
+                            `4. Enter amount: ${details.amount}`,
+                            `5. Reference: ICE-${Date.now().toString().slice(-6)}`,
+                            `6. Confirm and send`
+                        ];
+
+                        steps.forEach((step) => {
+                            instructionsHtml += `
+                                <div class="detail-row">
+                                    <span class="label">·</span>
+                                    <span class="value" style="color:rgba(255,255,255,0.3);">${step}</span>
+                                </div>
+                            `;
+                        });
+
+                        document.getElementById('paymentContent').innerHTML = `
+                            <div class="method-icon">${details.icon}</div>
+                            <div class="method-name">${details.name}</div>
+                            <div class="method-desc">${details.desc}</div>
+
+                            <div class="divider"></div>
+
+                            <div style="font-size:0.7rem; color:rgba(255,255,255,0.06); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">
+                                📤 Send To (${details.name} Number/Address)
+                            </div>
+                            <div class="address-box">
+                                <div class="address">${details.address}</div>
+                            </div>
+
+                            <div style="font-size:0.7rem; color:rgba(255,255,255,0.06); text-transform:uppercase; letter-spacing:1px; margin:10px 0 6px;">
+                                💡 What to do?
+                            </div>
+                            <div class="address-box">
+                                <div class="instruction">${details.instruction}</div>
+                            </div>
+
+                            <div style="font-size:0.7rem; color:rgba(255,255,255,0.06); text-transform:uppercase; letter-spacing:1px; margin:10px 0 6px;">
+                                🔑 Reference
+                            </div>
+                            <div class="address-box">
+                                <div class="instruction" style="color:#d4a017;">ICE-${Date.now().toString().slice(-6)}</div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div style="font-size:0.7rem; color:rgba(255,255,255,0.06); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">
+                                📋 Instructions
+                            </div>
+                            ${instructionsHtml}
+
+                            <div class="divider"></div>
+
+                            <div style="display:flex; justify-content:space-between; padding-top:4px;">
+                                <span style="font-size:0.65rem; color:rgba(255,255,255,0.06);">💡 After payment, click the button below</span>
+                                <span style="font-size:0.65rem; color:rgba(255,255,255,0.06);">⏱ 1-5 mins</span>
+                            </div>
+                        `;
+
+                    } else {
+                        document.getElementById('paymentContent').innerHTML =
+                            `<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.05);"><p>❌ Package not found</p></div>`;
+                    }
+                }
+            }).catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('paymentContent').innerHTML =
+                    `<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.05);"><p>❌ Error loading payment details</p></div>`;
+            });
+        }
+
+        function confirmPayment() {
+            const confirmBtn = document.getElementById('confirmBtn');
+
+            if (!selectedPackage) {
+                alert('❌ No package selected. Please go back and try again.');
+                return;
+            }
+
+            const confirmUser = confirm(
+                '🟢 Have you completed the payment?\n\n' +
+                '📦 ' + selectedPackage.name + '\n' +
+                '💰 ' + selectedPackage.inr + ' INR\n\n' +
+                '⚠️ Please confirm only after you have sent the payment.'
+            );
+
+            if (confirmUser) {
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<span class="loader" style="display:inline-block;width:18px;height:18px;border:2px solid rgba(8,12,24,0.15);border-top:2px solid #080c18;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:8px;"></span> Redirecting...';
+
+                setTimeout(() => {
+                    const pkgId = getPackageId();
+                    const method = getMethod();
+                    const region = getRegion();
+                    const from = getReferrer();
+
+                    window.location.href = 'payment-submit.html?package=' + pkgId + '&method=' + method +
+                        '&region=' + region + '&from=' + from;
+                }, 1000);
+            }
+        }
+
+        auth.onAuthStateChanged((user) => {
+            setBackButton();
+            renderPaymentDetails();
+        });
+    </script>
+
+</body>
+</html>
