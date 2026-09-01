@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signal Active - ICE FISHING</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 120, 255, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 45%),
+                #0a0e1a;
+        }
+
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            user-select: none;
+            animation: fall linear infinite;
+        }
+        .particle.ice {
+            color: rgba(100, 200, 255, 0.05);
+            font-size: 0.9rem;
+        }
+        .particle.fish {
+            color: rgba(77, 201, 246, 0.04);
+            font-size: 1rem;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.05; }
+            90% { opacity: 0.05; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-top: 8px;
+        }
+
+        .header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .brand .logo {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 20px rgba(77, 201, 246, 0.15));
+        }
+
+        .header .brand h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header .brand h1 span {
+            color: #4dc9f6;
+        }
+
+        .header .back-btn {
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+        }
+
+        .signal-status {
+            background: rgba(0, 255, 136, 0.04);
+            border: 1px solid rgba(0, 255, 136, 0.06);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .signal-status .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .signal-status .left .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+        }
+
+        .signal-status .left .text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #00ff88;
+        }
+
+        .signal-status .right .time {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ============================================================
+           GET SIGNAL BUTTON
+           ============================================================ */
+        .get-signal-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4dc9f6, #2b8fc4);
+            color: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .get-signal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(77, 201, 246, 0.2);
+        }
+
+        .get-signal-btn:active {
+            transform: scale(0.97);
+        }
+
+        .get-signal-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ============================================================
+           SIGNAL CARD
+           ============================================================ */
+        .signal-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Blink Effect (not too fast) */
+        .signal-card.blink {
+            animation: blink-effect 1.2s ease-in-out 3;
+        }
+
+        @keyframes blink-effect {
+            0%, 100% { opacity: 1; }
+            25% { opacity: 0.3; }
+            50% { opacity: 1; }
+            75% { opacity: 0.3; }
+        }
+
+        /* Shake Effect */
+        .signal-card.shake {
+            animation: shake-effect 0.5s ease-in-out;
+        }
+
+        @keyframes shake-effect {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        /* New Signal Card Animation */
+        .signal-card.new-signal {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .signal-card .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .signal-card .signal-header .signal-id {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.08);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .signal-card .signal-header .signal-time {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.06);
+        }
+
+        .signal-card .signal-body {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .signal-card .signal-body .fish-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .signal-card .signal-body .signal-info {
+            flex: 1;
+        }
+
+        .signal-card .signal-body .signal-info .fish-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .signal-card .signal-body .signal-info .fish-details {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.12);
+            margin-top: 2px;
+        }
+
+        /* ============================================================
+           SIGNAL TYPE TEXT (Huge Reds / Big Orange / Lil Blues)
+           ============================================================ */
+        .signal-type-text {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .signal-type-text.red {
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 50, 50, 0.2);
+        }
+
+        .signal-type-text.orange {
+            color: #ffa500;
+            text-shadow: 0 0 20px rgba(255, 165, 0, 0.2);
+        }
+
+        .signal-type-text.blue {
+            color: #4dc9f6;
+            text-shadow: 0 0 20px rgba(77, 201, 246, 0.2);
+        }
+
+        .signal-card .signal-body .signal-right {
+            text-align: right;
+        }
+
+        .signal-card .signal-body .signal-right .odds-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .signal-card .signal-body .signal-right .odds-label {
+            font-size: 0.5rem;
+            color: rgba(255, 255, 255, 0.06);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .signal-card .signal-body .signal-right .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.45rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .signal-card .signal-body .signal-right .status-badge.active {
+            background: rgba(0, 255, 136, 0.06);
+            color: #00ff88;
+        }
+
+        .signal-card .signal-body .signal-right .status-badge.waiting {
+            background: rgba(255, 165, 0, 0.06);
+            color: #ffa500;
+        }
+
+        .signal-card .signal-body .signal-right .status-badge.completed {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .no-signals {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.04);
+        }
+
+        .no-signals .icon {
+            font-size: 3rem;
+            opacity: 0.2;
+            margin-bottom: 10px;
+        }
+
+        .no-signals p {
+            font-size: 0.8rem;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.02);
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .header .brand h1 { font-size: 1rem; }
+            .header .brand .logo { font-size: 1.5rem; }
+            .signal-card { padding: 12px 14px; }
+            .signal-card .signal-body .fish-image { width: 44px; height: 44px; }
+            .signal-card .signal-body .signal-info .fish-name { font-size: 0.8rem; }
+            .signal-card .signal-body .signal-right .odds-value { font-size: 0.85rem; }
+            .signal-status { flex-direction: column; gap: 6px; text-align: center; }
+            .get-signal-btn { font-size: 0.85rem; padding: 14px; }
+        }
+
+        @media (max-width: 380px) {
+            .signal-card .signal-body { flex-wrap: wrap; gap: 6px; }
+            .signal-card .signal-body .signal-info { flex-basis: 100%; }
+            .signal-card .signal-body .signal-right { flex-basis: 100%; text-align: left; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div id="particles"></div>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="brand">
+                <span class="logo">🎣</span>
+                <h1>ICE <span>FISHING</span></h1>
+            </div>
+            <a href="dashboard.html" class="back-btn">← Back</a>
+        </div>
+
+        <div class="signal-status">
+            <div class="left">
+                <span class="dot"></span>
+                <span class="text">🟢 Signal Active</span>
+            </div>
+            <div class="right">
+                <span class="time">⏱ <span id="signalTimer">00:00:00</span></span>
+            </div>
+        </div>
+
+        <!-- Get Signal Button -->
+        <button class="get-signal-btn" id="getSignalBtn" onclick="goToLiveGame()">
+            🎣 Get Signal
+        </button>
+
+        <!-- Signal List -->
+        <div id="signalList">
+            <div class="no-signals">
+                <div class="icon">🎣</div>
+                <p>Click "Get Signal" to start receiving signals</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            ICE FISHING © 2026
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script>
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const ice = ['❄️', '✦', '❄️', '✦'];
+            const fish = ['🐟', '🐠', '🐡'];
+
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                const isFish = Math.random() < 0.3;
+                el.className = 'particle ' + (isFish ? 'fish' : 'ice');
+                el.textContent = isFish ?
+                    fish[Math.floor(Math.random() * fish.length)] :
+                    ice[Math.floor(Math.random() * ice.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 0.8 + 0.5) + 'rem';
+                el.style.animationDuration = (Math.random() * 18 + 12) + 's';
+                el.style.animationDelay = (Math.random() * 20) + 's';
+                container.appendChild(el);
+            }
+        })();
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================================
+        // CLOUDINARY IMAGE URLS (আপনার ৫টি ইমেজ)
+        // ============================================================
+        const fishImages = [
+            { 
+                id: 'yellow', 
+                name: 'Yellow Fish', 
+                emoji: '🐟',
+                image: 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-yellow_zkxguo.png', 
+                type: 'orange',
+                typeText: 'Big Orange',
+                odds: 1.85,
+                color: '#ffa500'
+            },
+            { 
+                id: 'blue', 
+                name: 'Blue Fish', 
+                emoji: '🐠',
+                image: 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-blue_niavh5.png', 
+                type: 'blue',
+                typeText: 'Lil Blues',
+                odds: 2.10,
+                color: '#4dc9f6'
+            },
+            { 
+                id: 'red', 
+                name: 'Red Fish', 
+                emoji: '🐡',
+                image: 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-red_g9jmt4.png', 
+                type: 'red',
+                typeText: 'Huge Reds',
+                odds: 3.50,
+                color: '#ff6b6b'
+            },
+            { 
+                id: 'darkleaf', 
+                name: 'Dark Leaf', 
+                emoji: '🌿',
+                image: 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040427/Compressed_DARK_LEAF_2_2_intxk4.png', 
+                type: 'blue',
+                typeText: 'Lil Blues',
+                odds: 2.80,
+                color: '#4dc9f6'
+            },
+            { 
+                id: 'whiteleaf', 
+                name: 'White Leaf', 
+                emoji: '🌿',
+                image: 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/Compressed_white_leaf_wif8c8.png', 
+                type: 'orange',
+                typeText: 'Big Orange',
+                odds: 1.45,
+                color: '#ffa500'
+            }
+        ];
+
+        let signalTimerInterval = null;
+        let signalStartTime = null;
+        let signalCount = 0;
+        let isGettingSignal = false;
+
+        // ============================================================
+        // GET NEW SIGNAL (User clicks button)
+        // ============================================================
+        function goToLiveGame() {
+            // Get Signal is the entry point to the live game. Do not generate
+            // a fake signal on this page; open the actual live-game HTML.
+            window.location.href = 'live-game.html';
+        }
+
+        // Kept for backward compatibility with any older inline references.
+        function getNewSignal() {
+            goToLiveGame();
+        }
+
+        // ============================================================
+        // GENERATE SINGLE SIGNAL
+        // ============================================================
+        function generateSingleSignal() {
+            const fish = fishImages[Math.floor(Math.random() * fishImages.length)];
+            signalCount++;
+            
+            const statuses = ['active', 'waiting', 'completed'];
+            const status = statuses[Math.floor(Math.random() * statuses.length)];
+            
+            const time = new Date();
+
+            return {
+                id: 'SIG-' + String(signalCount).padStart(3, '0'),
+                fish: fish,
+                status: status,
+                time: time,
+                odds: fish.odds + (Math.random() * 0.3 - 0.15)
+            };
+        }
+
+        // ============================================================
+        // ADD SIGNAL TO UI
+        // ============================================================
+        function addSignalToUI(signal) {
+            const container = document.getElementById('signalList');
+            
+            // Remove "no signals" message if present
+            const noSignal = container.querySelector('.no-signals');
+            if (noSignal) {
+                noSignal.remove();
+            }
+
+            const statusClass = signal.status;
+            const statusLabel = signal.status.charAt(0).toUpperCase() + signal.status.slice(1);
+            const timeStr = signal.time.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            const typeTextClass = signal.fish.type;
+            const typeText = signal.fish.typeText;
+
+            const cardHtml = `
+                <div class="signal-card new-signal blink shake" id="signal-${signal.id}">
+                    <div class="signal-header">
+                        <span class="signal-id">${signal.id}</span>
+                        <span class="signal-time">${timeStr}</span>
+                    </div>
+                    <div class="signal-body">
+                        <img src="${signal.fish.image}" alt="${signal.fish.name}" class="fish-image" onerror="this.style.display='none'; this.outerHTML='<span style=\\'font-size:2rem;\\'>${signal.fish.emoji}</span>';" />
+                        <div class="signal-info">
+                            <div class="fish-name">${signal.fish.emoji} ${signal.fish.name}</div>
+                            <div class="signal-type-text ${typeTextClass}">${typeText}</div>
+                            <div class="fish-details">${signal.fish.type.charAt(0).toUpperCase() + signal.fish.type.slice(1)} · ${signal.status}</div>
+                        </div>
+                        <div class="signal-right">
+                            <div class="odds-value">${signal.odds.toFixed(2)}x</div>
+                            <div class="odds-label">Odds</div>
+                            <span class="status-badge ${statusClass}">${statusLabel}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Insert at the top (newest first)
+            container.insertAdjacentHTML('afterbegin', cardHtml);
+
+            // Remove blink and shake classes after animation completes
+            setTimeout(() => {
+                const card = document.getElementById(`signal-${signal.id}`);
+                if (card) {
+                    card.classList.remove('blink', 'shake', 'new-signal');
+                }
+            }, 4000);
+
+            // Limit to 10 signals (remove oldest)
+            const cards = container.querySelectorAll('.signal-card');
+            if (cards.length > 10) {
+                cards[cards.length - 1].remove();
+            }
+        }
+
+        // ============================================================
+        // START SIGNAL TIMER
+        // ============================================================
+        function startSignalTimer() {
+            if (signalTimerInterval) {
+                clearInterval(signalTimerInterval);
+            }
+
+            signalStartTime = Date.now();
+
+            signalTimerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - signalStartTime) / 1000);
+                const hours = Math.floor(elapsed / 3600);
+                const minutes = Math.floor((elapsed % 3600) / 60);
+                const seconds = elapsed % 60;
+
+                document.getElementById('signalTimer').textContent =
+                    String(hours).padStart(2, '0') + ':' +
+                    String(minutes).padStart(2, '0') + ':' +
+                    String(seconds).padStart(2, '0');
+            }, 1000);
+        }
+
+        // ============================================================
+        // CHECK AUTH
+        // ============================================================
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                // Signal Active page is protected. The user must have a real,
+                // non-expired activation before this page can be opened.
+                const snap = await db.collection('userActivations')
+                    .where('userId', '==', user.uid)
+                    .get();
+                const now = Date.now();
+                const active = snap.docs.some(doc => {
+                    const data = doc.data() || {};
+                    if (data.status !== 'active') return false;
+                    const exp = data.expiresAt?.toDate?.() || new Date(data.expiresAt);
+                    return exp && !Number.isNaN(exp.getTime()) && exp.getTime() > now;
+                });
+
+                if (!active) {
+                    window.location.href = 'start-signal.html';
+                    return;
+                }
+
+                startSignalTimer();
+            } catch (error) {
+                console.error('Error checking signal activation:', error);
+                window.location.href = 'start-signal.html';
+            }
+        });
+    </script>
+
+</body>
+</html>
