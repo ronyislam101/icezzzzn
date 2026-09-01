@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICE FISHING</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+        }
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 40%, rgba(0, 120, 255, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(0, 200, 255, 0.04) 0%, transparent 40%),
+                radial-gradient(ellipse at 80% 70%, rgba(100, 200, 255, 0.03) 0%, transparent 40%),
+                #0a0e1a;
+        }
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            font-size: 1rem;
+            opacity: 0.04;
+            animation: float linear infinite;
+            user-select: none;
+        }
+        .particle.ice { color: #b0e0ff; }
+        .particle.fish { color: #4dc9f6; }
+        @keyframes float {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.04; }
+            90% { opacity: 0.04; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+        .history-link {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 10;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.25);
+            text-decoration: none;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .history-link:hover {
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(11, 15, 26, 0.92);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 28px;
+            padding: 40px 34px 34px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+        .logo { margin-bottom: 24px; }
+        .logo .icon { font-size: 2.8rem; display: inline-block; margin-bottom: 4px; }
+        .logo h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; line-height: 1.2; }
+        .logo h1 .highlight { color: #4dc9f6; }
+        .logo .sub { font-size: 0.6rem; font-weight: 400; color: rgba(255, 255, 255, 0.1); letter-spacing: 8px; text-transform: uppercase; margin-top: 2px; }
+        .divider { display: flex; align-items: center; gap: 12px; margin: 14px 0 20px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent); }
+        .divider span { font-size: 0.5rem; color: rgba(255, 255, 255, 0.06); letter-spacing: 5px; text-transform: uppercase; font-weight: 300; }
+        .field { position: relative; margin-bottom: 14px; }
+        .field .icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; opacity: 0.2; transition: 0.3s; }
+        .field input {
+            width: 100%;
+            padding: 15px 16px 15px 48px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: #ffffff;
+            outline: none;
+            transition: 0.3s;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+        .field input::placeholder { color: rgba(255, 255, 255, 0.12); font-weight: 300; letter-spacing: 1px; }
+        .field input:focus { border-color: rgba(77, 201, 246, 0.2); background: rgba(77, 201, 246, 0.02); }
+        .field input:focus ~ .icon { opacity: 0.5; color: #4dc9f6; }
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4dc9f6, #2b8fc4);
+            color: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 56px;
+        }
+        .btn-login:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(77, 201, 246, 0.25); }
+        .btn-login:active:not(:disabled) { transform: scale(0.97); }
+        .btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; }
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 3px solid rgba(10, 14, 26, 0.15);
+            border-top: 3px solid #0a0e1a;
+            animation: spin 0.8s linear infinite;
+            flex-shrink: 0;
+        }
+        .spinner.hidden { display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .msg {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin: 10px 0 2px;
+            display: none;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+        }
+        .msg.show { display: block; animation: fade 0.3s ease; }
+        .msg.error { background: rgba(255, 50, 50, 0.06); border: 1px solid rgba(255, 50, 50, 0.08); color: #ff6b6b; }
+        .msg.success { background: rgba(0, 255, 150, 0.04); border: 1px solid rgba(0, 255, 150, 0.06); color: #00ff88; }
+        @keyframes fade { 0% { opacity: 0; transform: translateY(-4px); } 100% { opacity: 1; transform: translateY(0); } }
+        .action-row { display: flex; gap: 10px; margin-top: 14px; }
+        .action-row .btn-secondary {
+            flex: 1;
+            padding: 12px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.35);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+        .action-row .btn-secondary:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.7); }
+        .action-row .btn-secondary.buy { border-color: rgba(77, 201, 246, 0.08); color: rgba(77, 201, 246, 0.35); }
+        .action-row .btn-secondary.buy:hover { background: rgba(77, 201, 246, 0.05); border-color: rgba(77, 201, 246, 0.15); color: #4dc9f6; }
+        .action-row .btn-secondary.support { border-color: rgba(255, 215, 0, 0.08); color: rgba(255, 215, 0, 0.35); }
+        .action-row .btn-secondary.support:hover { background: rgba(255, 215, 0, 0.05); border-color: rgba(255, 215, 0, 0.15); color: #ffd700; }
+        .footer { margin-top: 18px; display: flex; justify-content: center; gap: 6px; font-size: 0.5rem; color: rgba(255, 255, 255, 0.02); font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
+        @media (max-width: 480px) {
+            .card { padding: 28px 20px 24px; border-radius: 20px; }
+            .logo h1 { font-size: 1.6rem; }
+            .logo .icon { font-size: 2.2rem; }
+            .field input { padding: 13px 14px 13px 42px; font-size: 0.85rem; }
+            .btn-login { font-size: 0.85rem; padding: 13px; min-height: 50px; }
+            .spinner { width: 20px; height: 20px; border-width: 2.5px; }
+            .history-link { top: 12px; right: 12px; font-size: 0.65rem; padding: 5px 12px; }
+            .action-row { flex-direction: column; gap: 8px; }
+            .action-row .btn-secondary { padding: 11px; font-size: 0.7rem; }
+        }
+        @media (max-width: 380px) {
+            .card { padding: 20px 14px 18px; }
+            .logo h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div class="particles" id="particles"></div>
+    <a href="transaction.html" class="history-link">📊 Transaction History</a>
+
+    <div class="wrapper">
+        <div class="card">
+            <div class="logo">
+                <div class="icon">🎣</div>
+                <h1>ICE <span class="highlight">FISHING</span></h1>
+                <div class="sub">casino</div>
+            </div>
+            <div class="divider">
+                <span>sign in</span>
+            </div>
+
+            <form id="loginForm">
+                <div class="field">
+                    <span class="icon">🔑</span>
+                    <input
+                        type="text"
+                        id="loginKey"
+                        placeholder="Enter your license key"
+                        maxlength="19"
+                        autofocus
+                        required
+                        autocomplete="off"
+                    />
+                </div>
+                <div id="msg" class="msg">
+                    <span id="msgText"></span>
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span class="spinner hidden" id="spinner"></span>
+                    <span id="btnLabel">Activate License</span>
+                </button>
+            </form>
+
+            <div class="action-row">
+                <a href="packages.html?from=login" class="btn-secondary buy">📦 Buy Package</a>
+                <a href="https://t.me/+KjcGu4IKIMFlMzg9" target="_blank" class="btn-secondary support">📧 Contact Support</a>
+            </div>
+            <div class="footer">
+                <span>❄️</span>
+                <span>·</span>
+                <span>under the ice</span>
+                <span>·</span>
+                <span>🎰</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // PARTICLES
+        // ============================================================
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const iceEmojis = ['❄️', '✦', '❄️', '✦', '❄️'];
+            const fishEmojis = ['🐟', '🐠', '🐡'];
+
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                const isFish = Math.random() < 0.35;
+                el.className = 'particle ' + (isFish ? 'fish' : 'ice');
+                el.textContent = isFish ?
+                    fishEmojis[Math.floor(Math.random() * fishEmojis.length)] :
+                    iceEmojis[Math.floor(Math.random() * iceEmojis.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 0.8 + 0.6) + 'rem';
+                el.style.opacity = Math.random() * 0.04 + 0.02;
+                el.style.animationDuration = (Math.random() * 18 + 12) + 's';
+                el.style.animationDelay = (Math.random() * 20) + 's';
+                container.appendChild(el);
+            }
+        })();
+
+        // ============================================================
+        // FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8",
+            databaseURL: "https://ice-fishing-c20bc-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        // ============================================================
+        // DOM ELEMENTS
+        // ============================================================
+        const form = document.getElementById('loginForm');
+        const keyInput = document.getElementById('loginKey');
+        const msg = document.getElementById('msg');
+        const msgText = document.getElementById('msgText');
+        const loginBtn = document.getElementById('loginBtn');
+        const btnLabel = document.getElementById('btnLabel');
+        const spinner = document.getElementById('spinner');
+
+        // ============================================================
+        // AUTO-FORMAT KEY
+        // ============================================================
+        keyInput.addEventListener('input', function(e) {
+            let value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+            let formatted = '';
+            for (let i = 0; i < value.length && i < 16; i++) {
+                if (i > 0 && i % 4 === 0) formatted += '-';
+                formatted += value[i];
+            }
+            this.value = formatted;
+        });
+
+        keyInput.focus();
+
+        // ============================================================
+        // MESSAGE FUNCTIONS
+        // ============================================================
+        function showMsg(text, type) {
+            msgText.textContent = text;
+            msg.className = 'msg show ' + type;
+            console.log('📢 Message:', text, 'Type:', type);
+        }
+
+        function hideMsg() {
+            msg.className = 'msg';
+        }
+
+        function setLoading(loading) {
+            loginBtn.disabled = loading;
+            if (loading) {
+                spinner.classList.remove('hidden');
+                btnLabel.textContent = 'Verifying...';
+            } else {
+                spinner.classList.add('hidden');
+                btnLabel.textContent = 'Activate License';
+            }
+        }
+
+        // ============================================================
+        // HANDLE LOGIN - DIRECT REALTIME DATABASE CHECK
+        // ============================================================
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideMsg();
+
+            const key = keyInput.value.trim().toUpperCase();
+            console.log('🔑 Login attempt with key:', key);
+
+            if (!key || key.length < 19) {
+                showMsg('⚠️ Please enter a valid license key (format: XXXX-XXXX-XXXX-XXXX).', 'error');
+                keyInput.focus();
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                const cleanKey = key.replace(/-/g, '');
+                console.log('🔍 Searching for clean key:', cleanKey);
+
+                // ============================================================
+                // STEP 1: Check in Realtime Database
+                // ============================================================
+                const snapshot = await db.ref('userKeys/' + cleanKey).once('value');
+                const keyData = snapshot.val();
+
+                console.log('📦 Key data from Realtime DB:', keyData);
+
+                if (!keyData) {
+                    showMsg('❌ Invalid license key. Please check and try again.', 'error');
+                    setLoading(false);
+                    keyInput.value = '';
+                    keyInput.focus();
+                    return;
+                }
+
+                if (keyData.isUsed) {
+                    showMsg('❌ This license key is already used. Contact support.', 'error');
+                    setLoading(false);
+                    keyInput.value = '';
+                    keyInput.focus();
+                    return;
+                }
+
+                if (keyData.isBanned) {
+                    showMsg('❌ This license key is banned. Contact support.', 'error');
+                    setLoading(false);
+                    keyInput.value = '';
+                    keyInput.focus();
+                    return;
+                }
+
+                if (keyData.expiryDate) {
+                    const expiry = new Date(keyData.expiryDate);
+                    if (expiry < new Date()) {
+                        showMsg('❌ License key has expired. Contact support.', 'error');
+                        setLoading(false);
+                        return;
+                    }
+                }
+
+                // ============================================================
+                // STEP 2: Create/Login user with Email/Password
+                // ============================================================
+                // The license key itself is NOT an email/password.
+                // We use a deterministic Firebase Auth account for each key.
+                const email = cleanKey + '@icefishing.com';
+                const password = 'IceFishing@2026#' + cleanKey;
+
+                let userCredential;
+
+                try {
+                    // First attempt to create the Auth account.
+                    // This is important for a newly generated license key.
+                    userCredential = await auth.createUserWithEmailAndPassword(
+                        email,
+                        password
+                    );
+
+                    console.log('✅ New Firebase Auth account created:', userCredential.user.uid);
+
+                } catch (createError) {
+                    console.log('ℹ️ Create account result:', createError.code);
+
+                    if (createError.code === 'auth/email-already-in-use') {
+                        // Existing account: sign in using the same deterministic credentials.
+                        try {
+                            userCredential = await auth.signInWithEmailAndPassword(
+                                email,
+                                password
+                            );
+
+                            console.log('✅ Existing Firebase Auth account logged in:', userCredential.user.uid);
+
+                        } catch (loginError) {
+                            console.error('❌ Firebase login error:', loginError);
+
+                            let authMsg = 'Firebase authentication failed.';
+
+                            if (
+                                loginError.code === 'auth/invalid-credential' ||
+                                loginError.code === 'auth/invalid-login-credentials' ||
+                                loginError.code === 'auth/wrong-password'
+                            ) {
+                                authMsg =
+                                    'This license already has a different Firebase password. ' +
+                                    'Generate a new license key or reset its Firebase Auth account.';
+                            } else if (loginError.code === 'auth/user-disabled') {
+                                authMsg = 'This Firebase account has been disabled.';
+                            } else if (loginError.code === 'auth/too-many-requests') {
+                                authMsg = 'Too many authentication attempts. Please try again later.';
+                            } else if (loginError.message) {
+                                authMsg = loginError.message;
+                            }
+
+                            showMsg('❌ ' + authMsg, 'error');
+                            setLoading(false);
+                            return;
+                        }
+                    } else if (createError.code === 'auth/operation-not-allowed') {
+                        showMsg(
+                            '❌ Firebase Email/Password authentication is disabled. Enable it in Firebase Console.',
+                            'error'
+                        );
+                        setLoading(false);
+                        return;
+                    } else if (createError.code === 'auth/weak-password') {
+                        showMsg('❌ Firebase rejected the password configuration.', 'error');
+                        setLoading(false);
+                        return;
+                    } else if (createError.code === 'auth/invalid-email') {
+                        showMsg('❌ Invalid Firebase email generated from this license key.', 'error');
+                        setLoading(false);
+                        return;
+                    } else {
+                        console.error('❌ Firebase account creation error:', createError);
+                        showMsg(
+                            '❌ Authentication failed: ' + (createError.message || 'Unknown error.'),
+                            'error'
+                        );
+                        setLoading(false);
+                        return;
+                    }
+                }
+
+                const user = userCredential.user;
+
+                if (!user || !user.uid) {
+                    showMsg('❌ Firebase did not return a valid user account.', 'error');
+                    setLoading(false);
+                    return;
+                }
+
+                console.log('✅ Authenticated UID:', user.uid);
+
+                // ============================================================
+                // STEP 3: Update key as used
+                // ============================================================
+                await db.ref('userKeys/' + cleanKey).update({
+                    isUsed: true,
+                    usedBy: user.uid,
+                    loginCount: (keyData.loginCount || 0) + 1,
+                    usedAt: firebase.database.ServerValue.TIMESTAMP,
+                    updatedAt: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                // ============================================================
+                // STEP 4: Save user data
+                // ============================================================
+                await db.ref('users/' + user.uid).set({
+                    uid: user.uid,
+                    userKey: cleanKey,
+                    name: keyData.userName || 'Player',
+                    phone: keyData.userPhone || '',
+                    packageName: keyData.packageName || 'Starter',
+                    packagePrice: keyData.packagePrice || 0,
+                    packageDuration: keyData.packageDuration || '1 Hour',
+                    packageExpiry: keyData.expiryDate || null,
+                    isActive: true,
+                    isBlocked: false,
+                    walletBalance: 0,
+                    totalFish: 0,
+                    totalScore: 0,
+                    coins: 0,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    lastLogin: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                showMsg('✅ Welcome to ICE FISHING! Redirecting...', 'success');
+                setLoading(false);
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('❌ Login Error:', error);
+                let errorMsg = 'Login failed. Please try again.';
+                if (error.code === 'auth/email-already-in-use') errorMsg = 'Account already exists. Please contact support.';
+                else if (error.code === 'auth/weak-password') errorMsg = 'Password is too weak.';
+                else if (
+                    error.code === 'auth/invalid-credential' ||
+                    error.code === 'auth/invalid-login-credentials' ||
+                    error.code === 'auth/wrong-password'
+                ) errorMsg = 'Invalid Firebase credentials for this license key. Generate a new key or reset the Auth account.';
+                else if (error.code === 'auth/too-many-requests') errorMsg = 'Too many attempts. Try again later.';
+                else if (error.code === 'auth/operation-not-allowed') errorMsg = 'Email/Password sign-in not enabled. Contact admin.';
+                else if (error.message) errorMsg = error.message;
+                showMsg('❌ ' + errorMsg, 'error');
+                setLoading(false);
+            }
+        }
+
+        form.addEventListener('submit', handleLogin);
+        keyInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+        keyInput.addEventListener('focus', hideMsg);
+
+        console.log('🔥 User Login Ready');
+        console.log('📁 Database URL:', firebaseConfig.databaseURL);
+    </script>
+</body>
+</html>
