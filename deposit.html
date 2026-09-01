@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Balance - ICE FISHING</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 120, 255, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 45%),
+                #0a0e1a;
+        }
+
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            user-select: none;
+            animation: fall linear infinite;
+        }
+        .particle.ice {
+            color: rgba(100, 200, 255, 0.05);
+            font-size: 0.9rem;
+        }
+        .particle.fish {
+            color: rgba(77, 201, 246, 0.04);
+            font-size: 1rem;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.05; }
+            90% { opacity: 0.05; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-top: 8px;
+        }
+
+        .header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .brand .logo {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 20px rgba(77, 201, 246, 0.15));
+        }
+
+        .header .brand h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header .brand h1 span {
+            color: #4dc9f6;
+        }
+
+        .header .back-btn {
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+        }
+
+        .page-title {
+            margin-bottom: 20px;
+        }
+
+        .page-title h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .page-title p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .region-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.15);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .region-item {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 100%;
+            color: inherit;
+            font: inherit;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .region-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .region-item.selected {
+            border-color: rgba(77, 201, 246, 0.25);
+            background: rgba(77, 201, 246, 0.04);
+            box-shadow: 0 0 30px rgba(77, 201, 246, 0.03);
+        }
+
+        .region-item .flag {
+            width: 44px;
+            height: 30px;
+            margin: 0 auto 6px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            overflow: hidden;
+            font-size: 1.65rem;
+            line-height: 1;
+            flex: 0 0 auto;
+        }
+
+        /* CSS flags: do not depend on Android/Windows emoji fonts. */
+        .flag-bd {
+            background: linear-gradient(#006a4e 0 100%);
+        }
+        .flag-bd .flag-disc {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #f42a41;
+            transform: translateX(-2px);
+        }
+        .flag-in {
+            background: linear-gradient(to bottom, #ff9933 0 33.33%, #ffffff 33.33% 66.66%, #138808 66.66% 100%);
+        }
+        .flag-in .flag-wheel {
+            color: #000080;
+            font-size: 13px;
+            line-height: 1;
+            font-family: Arial, sans-serif;
+        }
+        .flag-world {
+            background: transparent;
+            border: 2px solid #4dc9f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            overflow: hidden;
+        }
+        .flag-world .globe-line {
+            position: absolute;
+            display: block;
+            border: 1px solid #4dc9f6;
+            opacity: .9;
+        }
+        .flag-world .globe-v {
+            width: 12px; height: 27px; border-radius: 50%;
+        }
+        .flag-world .globe-h {
+            width: 27px; height: 10px; border-radius: 50%;
+        }
+
+        .region-item .name {
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.2);
+            margin-top: 4px;
+            transition: 0.3s;
+        }
+
+        .region-item.selected .name {
+            color: #4dc9f6;
+        }
+
+        .amount-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 20px 22px;
+            margin-bottom: 16px;
+        }
+
+        .amount-section .min-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.15);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .amount-section .min-amount {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 4px;
+        }
+
+        .amount-section .live-equivalent {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.25);
+            margin-bottom: 14px;
+            letter-spacing: 0.2px;
+        }
+
+        .amount-section .live-equivalent .live-dot {
+            color: #00ff88;
+        }
+
+        .amount-section .input-group {
+            position: relative;
+        }
+
+        .amount-section .input-group .currency-symbol {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .amount-section .input-group input {
+            width: 100%;
+            padding: 14px 16px 14px 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .amount-section .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.08);
+            font-weight: 300;
+        }
+
+        .amount-section .input-group input:focus {
+            border-color: rgba(77, 201, 246, 0.15);
+            background: rgba(77, 201, 246, 0.02);
+        }
+
+        .amount-section .hint {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.04);
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        .btn-proceed {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4dc9f6, #2b8fc4);
+            color: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-proceed:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(77, 201, 246, 0.2);
+        }
+
+        .btn-proceed:active {
+            transform: scale(0.97);
+        }
+
+        .btn-proceed:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-proceed .loader {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(10, 14, 26, 0.15);
+            border-top: 2px solid #0a0e1a;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .msg {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 400;
+            margin: 10px 0 2px;
+            display: none;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .msg.show {
+            display: block;
+            animation: fade 0.3s ease;
+        }
+
+        .msg.error {
+            background: rgba(255, 50, 50, 0.06);
+            border: 1px solid rgba(255, 50, 50, 0.08);
+            color: #ff6b6b;
+        }
+
+        .msg.success {
+            background: rgba(0, 255, 150, 0.04);
+            border: 1px solid rgba(0, 255, 150, 0.06);
+            color: #00ff88;
+        }
+
+        @keyframes fade {
+            0% { opacity: 0; transform: translateY(-4px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .support-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.06);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .support-link:hover {
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.02);
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .header .brand h1 { font-size: 1rem; }
+            .header .brand .logo { font-size: 1.5rem; }
+            .page-title h2 { font-size: 1.1rem; }
+            .region-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .region-item { padding: 12px 6px; }
+            .region-item .flag { font-size: 1.6rem; }
+            .region-item .name { font-size: 0.5rem; }
+            .amount-section { padding: 16px 16px; }
+            .amount-section .min-amount { font-size: 1.3rem; }
+            .btn-proceed { font-size: 0.85rem; padding: 14px; }
+        }
+
+        @media (max-width: 380px) {
+            .region-grid { gap: 6px; }
+            .region-item { padding: 10px 4px; }
+            .region-item .flag { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div id="particles"></div>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="brand">
+                <span class="logo">🎣</span>
+                <h1>ICE <span>FISHING</span></h1>
+            </div>
+            <a href="dashboard.html" class="back-btn">← Back</a>
+        </div>
+
+        <div class="page-title">
+            <h2>💰 Add Balance</h2>
+            <p>Select your region and enter amount to deposit</p>
+        </div>
+
+        <span class="region-label">📍 Select Region</span>
+
+        <div class="region-grid" id="regionGrid">
+            <button type="button" class="region-item" data-region="bangladesh" aria-pressed="false">
+                <div class="flag flag-bd" aria-hidden="true"><span class="flag-disc"></span></div>
+                <div class="name">Bangladesh</div>
+            </button>
+            <button type="button" class="region-item" data-region="india" aria-pressed="false">
+                <div class="flag flag-in" aria-hidden="true"><span class="flag-disc"></span><span class="flag-wheel">☸</span></div>
+                <div class="name">India</div>
+            </button>
+            <button type="button" class="region-item" data-region="worldwide" aria-pressed="false">
+                <div class="flag flag-world" aria-hidden="true"><span class="globe-line globe-v"></span><span class="globe-line globe-h"></span></div>
+                <div class="name">Worldwide</div>
+            </button>
+        </div>
+
+        <div class="amount-section">
+            <div class="min-label">💳 Minimum Deposit</div>
+            <div id="minAmount" class="min-amount">₹2,500.00</div>
+            <div id="liveEquivalent" class="live-equivalent">⏳ Loading live INR → BDT / USD rates...</div>
+            <div class="input-group">
+                <span class="currency-symbol" id="currencySymbol">₹</span>
+                <input
+                    type="number"
+                    id="amountInput"
+                    placeholder="Enter amount"
+                    min="0"
+                    step="1"
+                    required
+                />
+            </div>
+            <div class="hint" id="amountHint">Min: ₹2,500</div>
+        </div>
+
+        <div id="msg" class="msg">
+            <span id="msgText"></span>
+        </div>
+
+        <button class="btn-proceed" id="proceedBtn" onclick="handleProceed()">
+            💳 Proceed to Pay
+        </button>
+
+        <a href="https://t.me/+KjcGu4IKIMFlMzg9" target="_blank" class="support-link">
+            📧 Need help? Contact Support
+        </a>
+
+        <div class="footer">
+            Revo Flex © 2026
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+    </script>
+
+    <script>
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const ice = ['❄️', '✦', '❄️', '✦'];
+            const fish = ['🐟', '🐠', '🐡'];
+
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                const isFish = Math.random() < 0.3;
+                el.className = 'particle ' + (isFish ? 'fish' : 'ice');
+                el.textContent = isFish ?
+                    fish[Math.floor(Math.random() * fish.length)] :
+                    ice[Math.floor(Math.random() * ice.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 0.8 + 0.5) + 'rem';
+                el.style.animationDuration = (Math.random() * 18 + 12) + 's';
+                el.style.animationDelay = (Math.random() * 20) + 's';
+                container.appendChild(el);
+            }
+        })();
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8",
+            databaseURL: "https://ice-fishing-c20bc-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const rtdb = firebase.database();
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let selectedRegion = null;
+        const BASE_MIN_INR = 2500;
+        let liveRates = { BDT: null, USD: null };
+        let settingsLoaded = false;
+         let currentUser = null;
+         let userDepositLimit = 0;
+         let userDataLoaded = false;
+
+        const regionConfig = {
+            bangladesh: {
+                symbol: '৳',
+                code: 'BDT',
+                minAmount: BASE_MIN_INR,
+                label: 'Bangladesh',
+                paymentMethods: [
+                    { id: 'bkash', icon: '💚', name: 'Bkash' },
+                    { id: 'nagad', icon: '🟠', name: 'Nagad' },
+                    { id: 'rocket', icon: '🚀', name: 'Rocket' }
+                ]
+            },
+            india: {
+                symbol: '₹',
+                code: 'INR',
+                minAmount: BASE_MIN_INR,
+                label: 'India',
+                paymentMethods: [
+                    { id: 'paytm', icon: '💳', name: 'Paytm' },
+                    { id: 'upi', icon: '🇮🇳', name: 'UPI' },
+                    { id: 'phonepe', icon: '📱', name: 'PhonePe' },
+                    { id: 'gpay', icon: '💚', name: 'GPay' }
+                ]
+            },
+            worldwide: {
+                symbol: '$',
+                code: 'USD',
+                minAmount: BASE_MIN_INR,
+                label: 'Worldwide',
+                paymentMethods: [
+                    { id: 'btc', icon: '₿', name: 'Bitcoin' },
+                    { id: 'eth', icon: '⟠', name: 'Ethereum' },
+                    { id: 'usdt', icon: '🪙', name: 'Tether (USDT)' },
+                    { id: 'usdc', icon: '💵', name: 'USD Coin' },
+                    { id: 'ltc', icon: 'Ł', name: 'Litecoin' },
+                    { id: 'doge', icon: '🐕', name: 'Dogecoin' },
+                    { id: 'sol', icon: '☀️', name: 'Solana' },
+                    { id: 'bnb', icon: '🔶', name: 'BNB' },
+                    { id: 'trx', icon: '🔴', name: 'Tron' }
+                ]
+            }
+        };
+
+        // ============================================================
+        // LOAD SETTINGS
+        // ============================================================
+        function loadDepositSettings() {
+            db.collection('settings').doc('depositSettings').get()
+                .then(() => {
+                    settingsLoaded = true;
+                    updateAmountDisplay();
+                    fetchLiveRates();
+                })
+                .catch(() => {
+                    settingsLoaded = true;
+                    updateAmountDisplay();
+                    fetchLiveRates();
+                });
+        }
+
+        async function fetchLiveRates() {
+            try {
+                const response = await fetch('https://open.er-api.com/v6/latest/INR', { cache: 'no-store' });
+                if (!response.ok) throw new Error('Exchange-rate request failed');
+                const data = await response.json();
+                if (!data || data.result !== 'success' || !data.rates) throw new Error('Invalid exchange-rate response');
+
+                const bdt = Number(data.rates.BDT);
+                const usd = Number(data.rates.USD);
+                if (!Number.isFinite(bdt) || !Number.isFinite(usd)) throw new Error('BDT/USD rate unavailable');
+
+                liveRates.BDT = bdt;
+                liveRates.USD = usd;
+                updateAmountDisplay();
+            } catch (error) {
+                console.error('Live exchange-rate error:', error);
+                updateAmountDisplay();
+            }
+        }
+
+        setInterval(fetchLiveRates, 60 * 1000);
+
+        function updateAmountDisplay() {
+            if (!settingsLoaded) return;
+            if (!selectedRegion) selectedRegion = 'india';
+
+            const config = regionConfig[selectedRegion];
+
+            // Admin's individual limit is stored in USD. When a custom limit
+            // exists, show that user's limit in the selected region currency.
+            // Otherwise fall back to the normal base minimum.
+            let baseMinAmount = BASE_MIN_INR;
+            if (selectedRegion === 'bangladesh' && liveRates.BDT) {
+                baseMinAmount = BASE_MIN_INR * liveRates.BDT;
+            } else if (selectedRegion === 'worldwide' && liveRates.USD) {
+                baseMinAmount = BASE_MIN_INR * liveRates.USD;
+            }
+
+            let displayAmount = baseMinAmount;
+            let usingCustomLimit = userDepositLimit > 0;
+
+            if (usingCustomLimit) {
+                if (selectedRegion === 'india') {
+                    if (liveRates.USD) displayAmount = userDepositLimit / liveRates.USD;
+                } else if (selectedRegion === 'bangladesh') {
+                    if (liveRates.BDT && liveRates.USD) {
+                        displayAmount = userDepositLimit * (liveRates.BDT / liveRates.USD);
+                    }
+                } else {
+                    displayAmount = userDepositLimit;
+                }
+            }
+
+            const symbol = config.symbol;
+            const code = config.code;
+            const displayMin = displayAmount.toFixed(2);
+
+            const minLabel = document.querySelector('.amount-section .min-label');
+            if (minLabel) {
+                minLabel.textContent = usingCustomLimit ? '👤 Your Deposit Limit' : '💳 Minimum Deposit';
+            }
+
+            document.getElementById('minAmount').textContent = symbol + Number(displayMin).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById('currencySymbol').textContent = symbol;
+            const amountInput = document.getElementById('amountInput');
+            amountInput.placeholder = 'Enter amount (' + code + ')';
+            amountInput.min = displayAmount.toFixed(2);
+            document.getElementById('amountHint').textContent = usingCustomLimit
+                ? '👤 Individual deposit limit'
+                : 'Min: ' + symbol + Number(displayMin).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            const liveEquivalent = document.getElementById('liveEquivalent');
+            if (liveRates.BDT && liveRates.USD) {
+                if (usingCustomLimit) {
+                    const customBDT = userDepositLimit * (liveRates.BDT / liveRates.USD);
+                    const customINR = userDepositLimit / liveRates.USD;
+                    liveEquivalent.innerHTML =
+                        '<span class="live-dot">●</span> Minimum: $' + userDepositLimit.toFixed(2) +
+                        ' USD &nbsp;|&nbsp; ₹' + customINR.toFixed(2) +
+                        ' INR &nbsp;|&nbsp; ৳' + customBDT.toFixed(2) + ' BDT';
+                } else {
+                    const bdtAmount = BASE_MIN_INR * liveRates.BDT;
+                    const usdAmount = BASE_MIN_INR * liveRates.USD;
+                    liveEquivalent.innerHTML =
+                        '<span class="live-dot">●</span> Base: ₹2,500 = ৳' + bdtAmount.toFixed(2) +
+                        ' BDT &nbsp;|&nbsp; $' + usdAmount.toFixed(2) + ' USD';
+                }
+            } else {
+                liveEquivalent.textContent = '⏳ Loading live INR → BDT / USD rates...';
+            }
+        }
+
+        function selectRegion(region) {
+            if (!regionConfig[region]) return;
+            selectedRegion = region;
+
+            document.querySelectorAll('.region-item').forEach((el) => {
+                const active = el.dataset.region === region;
+                el.classList.toggle('selected', active);
+                el.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+
+            updateAmountDisplay();
+            const msg = document.getElementById('msg');
+            if (msg) msg.className = 'msg';
+        }
+
+        // Bind region buttons directly. This keeps selection working on mobile
+        // even if inline onclick handlers are blocked/stripped by the browser.
+        document.querySelectorAll('.region-item').forEach((button) => {
+            button.addEventListener('click', function () {
+                selectRegion(this.dataset.region);
+            });
+        });
+
+        function handleProceed() {
+            const msg = document.getElementById('msg');
+            const msgText = document.getElementById('msgText');
+            const proceedBtn = document.getElementById('proceedBtn');
+
+            if (!settingsLoaded || !userDataLoaded) {
+                msgText.textContent = '⏳ Please wait, loading your deposit limit...';
+                msg.className = 'msg show error';
+                return;
+            }
+
+            if (!selectedRegion) {
+                msgText.textContent = '❌ Please select a region first.';
+                msg.className = 'msg show error';
+                return;
+            }
+
+            const amountInput = document.getElementById('amountInput');
+            const amount = parseFloat(amountInput.value);
+
+            if (!amount || amount <= 0) {
+                msgText.textContent = '❌ Please enter a valid amount.';
+                msg.className = 'msg show error';
+                return;
+            }
+
+            const config = regionConfig[selectedRegion];
+            let minAmount = BASE_MIN_INR;
+
+            if (selectedRegion === 'bangladesh') {
+                if (!liveRates.BDT) {
+                    msgText.textContent = '⏳ Live BDT rate is still loading. Please try again.';
+                    msg.className = 'msg show error';
+                    return;
+                }
+                minAmount = BASE_MIN_INR * liveRates.BDT;
+            } else if (selectedRegion === 'worldwide') {
+                if (!liveRates.USD) {
+                    msgText.textContent = '⏳ Live USD rate is still loading. Please try again.';
+                    msg.className = 'msg show error';
+                    return;
+                }
+                minAmount = BASE_MIN_INR * liveRates.USD;
+            }
+
+            // If Admin set an individual limit, that exact value is the main
+            // deposit amount shown to the user and is the minimum required amount.
+            if (userDepositLimit > 0) {
+                let individualMin = userDepositLimit;
+                if (selectedRegion === 'india') {
+                    individualMin = userDepositLimit / liveRates.USD;
+                } else if (selectedRegion === 'bangladesh') {
+                    individualMin = userDepositLimit * (liveRates.BDT / liveRates.USD);
+                }
+                minAmount = individualMin;
+            }
+
+            if (amount < minAmount) {
+                msgText.textContent = '❌ Amount must be at least ' + config.symbol + minAmount.toFixed(2);
+                msg.className = 'msg show error';
+                return;
+            }
+
+            // Individual deposit limit is the MINIMUM required amount.
+            // There is intentionally no maximum: the user may deposit any
+            // amount greater than or equal to this minimum.
+
+            proceedBtn.disabled = true;
+            proceedBtn.innerHTML = '<span class="loader"></span> Redirecting...';
+
+            setTimeout(() => {
+                window.location.href = 'deposit-payment.html?region=' + selectedRegion +
+                    '&amount=' + amount +
+                    '&currency=' + config.code +
+                    '&symbol=' + encodeURIComponent(config.symbol) +
+                    '&methods=' + encodeURIComponent(JSON.stringify(config.paymentMethods));
+            }, 1000);
+        }
+
+        document.getElementById('amountInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleProceed();
+        });
+
+        // ============================================================
+        // LOAD CURRENT USER + INDIVIDUAL DEPOSIT LIMIT
+        // ============================================================
+        function loadCurrentUser() {
+            const auth = firebase.auth();
+            auth.onAuthStateChanged(async (user) => {
+                if (!user) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                currentUser = user;
+                userDataLoaded = false;
+
+                // Read the per-user limit from Firestore first, then RTDB as a
+                // fallback. Admin saves the same limit to both databases.
+                let limitFound = false;
+
+                try {
+                    const doc = await db.collection('users').doc(user.uid).get();
+                    if (doc.exists) {
+                        const rawLimit = Number(doc.data()?.depositLimit);
+                        if (Number.isFinite(rawLimit) && rawLimit > 0) {
+                            userDepositLimit = rawLimit;
+                            limitFound = true;
+                        } else if (rawLimit === 0) {
+                            userDepositLimit = 0;
+                            limitFound = true;
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Firestore deposit limit read failed, trying RTDB:', error);
+                }
+
+                if (!limitFound) {
+                    try {
+                        const snap = await rtdb.ref('users/' + user.uid + '/depositLimit').once('value');
+                        const rawLimit = Number(snap.val());
+                        userDepositLimit = Number.isFinite(rawLimit) && rawLimit > 0 ? rawLimit : 0;
+                    } catch (error) {
+                        console.error('RTDB deposit limit read failed:', error);
+                        userDepositLimit = 0;
+                    }
+                }
+
+                userDataLoaded = true;
+                updateUserLimitDisplay();
+            });
+        }
+
+        function updateUserLimitDisplay() {
+            // The individual limit is displayed in the main amount area.
+            updateAmountDisplay();
+        }
+
+        loadCurrentUser();
+        loadDepositSettings();
+        selectRegion('india');
+    </script>
+
+</body>
+</html>
