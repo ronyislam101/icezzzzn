@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Methods - ICE FISHING</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{min-height:100vh;background:#080c18;font-family:Inter,sans-serif;padding:20px;position:relative;overflow-x:hidden}
+        .bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 30%,rgba(0,180,255,.06),transparent 55%),radial-gradient(ellipse at 50% 80%,rgba(255,215,0,.03),transparent 45%),#080c18}
+        #particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+        .particle{position:absolute;user-select:none;animation:fall linear infinite}
+        .particle.ice{color:rgba(100,200,255,.05);font-size:.9rem}
+        .particle.fish{color:rgba(77,201,246,.04);font-size:1rem}
+        @keyframes fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:0}10%{opacity:.05}90%{opacity:.05}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+        .container{position:relative;z-index:1;max-width:520px;margin:0 auto;padding-bottom:30px}
+        .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-top:8px}
+        .header .brand{display:flex;align-items:center;gap:12px}
+        .header .brand .logo{font-size:2rem;filter:drop-shadow(0 0 20px rgba(77,201,246,.15))}
+        .header .brand h1{font-size:1.3rem;font-weight:800;color:#fff;letter-spacing:-.5px}
+        .header .brand h1 span{color:#fff}
+        .header .back-btn{padding:8px 18px;border:1px solid rgba(255,255,255,.06);border-radius:10px;background:rgba(255,255,255,.02);color:rgba(255,255,255,.3);font-size:.7rem;font-weight:500;cursor:pointer;transition:.3s;text-decoration:none;letter-spacing:.5px}
+        .header .back-btn:hover{background:rgba(255,255,255,.04);color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.08);transform:scale(1.02)}
+        .page-title{margin-bottom:20px}
+        .page-title h2{font-size:1.4rem;font-weight:700;color:#fff}
+        .page-title p{font-size:.8rem;color:rgba(255,255,255,.15);margin-top:4px;letter-spacing:.3px}
+        .order-summary{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:18px 20px;margin-bottom:20px}
+        .order-summary .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.85rem}
+        .order-summary .row .label{color:rgba(255,255,255,.15)}
+        .order-summary .row .value{color:#fff;font-weight:600}
+        .order-summary .divider{height:1px;background:rgba(255,255,255,.03);margin:8px 0}
+        .region-header{text-align:center;padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:12px;margin-bottom:16px}
+        .region-header .flag{font-size:2.5rem}
+        .region-header .name{font-size:1.1rem;font-weight:700;color:#fff;margin-top:4px}
+        .region-header .desc{font-size:.7rem;color:rgba(255,255,255,.12)}
+        .payment-methods{display:flex;flex-direction:column;gap:10px}
+        .payment-method{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:.3s;text-decoration:none}
+        .payment-method:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.2)}
+        .payment-method .left{display:flex;align-items:center;gap:14px}
+        .payment-method .left .method-logo{width:44px;height:44px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,.03);padding:4px}
+        .payment-method .left .info .name{font-size:.9rem;font-weight:600;color:#fff}
+        .payment-method .left .info .desc{font-size:.6rem;color:rgba(255,255,255,.12)}
+        .payment-method .right .arrow{color:rgba(255,255,255,.05);font-size:.8rem}
+        .payment-method:hover .right .arrow{color:rgba(255,255,255,.15)}
+        .payment-method .right .badge{font-size:.5rem;font-weight:600;padding:2px 10px;border-radius:10px;background:rgba(255,215,0,.06);color:#ffd700;text-transform:uppercase;letter-spacing:.5px;margin-right:8px}
+        .admin-note{margin-top:16px;padding:12px 16px;border-radius:10px;background:rgba(255,255,255,.01);border:1px dashed rgba(255,255,255,.03);text-align:center}
+        .admin-note p{font-size:.55rem;color:rgba(255,255,255,.04);letter-spacing:.5px}
+        .method-logo-fallback{font-size:2rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+        @media(max-width:480px){body{padding:12px}.header .brand h1{font-size:1rem}.header .brand .logo{font-size:1.5rem}.page-title h2{font-size:1.1rem}.payment-method{padding:12px 14px}.payment-method .left .method-logo{width:36px;height:36px}.payment-method .left .info .name{font-size:.8rem}.order-summary .row{font-size:.75rem}}
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+    <div id="particles"></div>
+    <div class="container">
+        <div class="header">
+            <div class="brand"><span class="logo">🎣</span><h1>ICE <span>FISHING</span></h1></div>
+            <a href="#" class="back-btn" id="backBtn">← Back</a>
+        </div>
+        <div class="page-title">
+            <h2>💳 Payment Methods</h2>
+            <p>Select your preferred payment method</p>
+        </div>
+        <div class="order-summary" id="orderSummary">
+            <div class="row"><span class="label">📦 Package</span><span class="value" id="pkgName">Loading...</span></div>
+            <div class="row"><span class="label">⏱ Duration</span><span class="value" id="pkgDuration">Loading...</span></div>
+            <div class="divider"></div>
+            <div class="row"><span class="label">💰 Total</span><span class="value" id="totalAmount">$0.00</span></div>
+        </div>
+        <div class="region-header" id="regionHeader">
+            <div class="flag" id="regionFlag">🌍</div>
+            <div class="name" id="regionName">Worldwide</div>
+            <div class="desc" id="regionDesc">Select your payment method</div>
+        </div>
+        <div class="payment-methods" id="paymentMethods">
+            <div style="text-align:center;padding:20px;color:rgba(255,255,255,.05)"><p>Loading payment methods...</p></div>
+        </div>
+        <div class="admin-note"><p>🛠️ Payment methods & details are managed by admin from Firebase Console</p></div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        (function createParticles(){const c=document.getElementById('particles');const ice=['❄️','✦','❄️','✦'];const fish=['🐟','🐠','🐡'];for(let i=0;i<25;i++){const el=document.createElement('div');const isFish=Math.random()<0.3;el.className='particle '+(isFish?'fish':'ice');el.textContent=isFish?fish[Math.floor(Math.random()*fish.length)]:ice[Math.floor(Math.random()*ice.length)];el.style.left=Math.random()*100+'%';el.style.fontSize=(Math.random()*.8+.5)+'rem';el.style.animationDuration=(Math.random()*18+12)+'s';el.style.animationDelay=(Math.random()*20)+'s';c.appendChild(el)}})();
+
+        const firebaseConfig={apiKey:"AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",authDomain:"ice-fishing-c20bc.firebaseapp.com",projectId:"ice-fishing-c20bc",storageBucket:"ice-fishing-c20bc.firebasestorage.app",messagingSenderId:"220872632937",appId:"1:220872632937:android:71997f3fd7dba6293a90f8"};
+        firebase.initializeApp(firebaseConfig);const db=firebase.firestore();const auth=firebase.auth();
+
+        // ============================================================
+        // LOGO CONFIG - সঠিক GitHub পাথ (আপনার ফাইল নাম অনুযায়ী)
+        // ============================================================
+        const LOGO_BASE = 'https://raw.githubusercontent.com/ronyislam101/icezzzzn/main/assets/logo/';
+
+        const methodLogos = {
+            bkash: LOGO_BASE + 'bkash.png',
+            nagad: LOGO_BASE + 'nagad.png',
+            rocket: LOGO_BASE + 'rocket.png',
+            paytm: LOGO_BASE + 'paytm.png',
+            upi: LOGO_BASE + 'upi.png',
+            phonepe: LOGO_BASE + 'phonepe.png',
+            gpay: LOGO_BASE + 'gpay.png',
+            btc: LOGO_BASE + 'btc.png',
+            eth: LOGO_BASE + 'eth.png',
+            usdt: LOGO_BASE + 'usdt.png',
+            usdc: LOGO_BASE + 'usdc.png',
+            ltc: LOGO_BASE + 'ltc.png',
+            doge: LOGO_BASE + 'doge.png',
+            sol: LOGO_BASE + 'sol.png',
+            bnb: LOGO_BASE + 'bnb.png',
+            trx: LOGO_BASE + 'trx.png',
+            // বেটিং সাইটগুলোর জন্য (যদি ব্যবহার করেন)
+            '1xbet': LOGO_BASE + '1xbet.png',
+            '22bet': LOGO_BASE + '22bet.png',
+            'bet365': LOGO_BASE + 'bet365.png',
+            'betway': LOGO_BASE + 'betway.png',
+            'dafabet': LOGO_BASE + 'dafabet.png',
+            'leon': LOGO_BASE + 'leon.png',
+            'megapari': LOGO_BASE + 'megapari.png',
+            'mostbet': LOGO_BASE + 'mostbet.png',
+            'parimatch': LOGO_BASE + 'parimatch.png',
+            'pinup': LOGO_BASE + 'pinup.png',
+            'stake': LOGO_BASE + 'stake.png',
+            'vbet': LOGO_BASE + 'vbet.png'
+        };
+
+        const methodNames = {
+            bkash: 'Bkash',
+            nagad: 'Nagad',
+            rocket: 'Rocket',
+            paytm: 'Paytm',
+            upi: 'UPI',
+            phonepe: 'PhonePe',
+            gpay: 'GPay',
+            btc: 'Bitcoin (BTC)',
+            eth: 'Ethereum (ETH)',
+            usdt: 'Tether (USDT)',
+            usdc: 'USD Coin (USDC)',
+            ltc: 'Litecoin (LTC)',
+            doge: 'Dogecoin (DOGE)',
+            sol: 'Solana (SOL)',
+            bnb: 'BNB',
+            trx: 'Tron (TRX)',
+            '1xbet': '1xBet',
+            '22bet': '22Bet',
+            'bet365': 'Bet365',
+            'betway': 'Betway',
+            'dafabet': 'Dafabet',
+            'leon': 'Leon',
+            'megapari': 'Megapari',
+            'mostbet': 'Mostbet',
+            'parimatch': 'Parimatch',
+            'pinup': 'Pin-Up',
+            'stake': 'Stake',
+            'vbet': 'VBET'
+        };
+
+        const regionNames = { bangladesh: '🇧🇩 Bangladesh', india: '🇮🇳 India', worldwide: '🌍 Worldwide' };
+
+        let selectedPackage=null,fromPage='',selectedRegion='',usdtToInr=85;
+
+        function getPackageId(){const p=new URLSearchParams(window.location.search);return p.get('package')}
+        function getRegion(){const p=new URLSearchParams(window.location.search);return p.get('region')||'worldwide'}
+        function getReferrer(){const p=new URLSearchParams(window.location.search);return p.get('from')||'dashboard'}
+
+        function setBackButton(){const back=document.getElementById('backBtn');fromPage=getReferrer();const pkgId=getPackageId();if(fromPage==='login')back.href='index.html';else back.href='payment.html?package='+pkgId+'&from='+fromPage}
+
+        async function fetchUSDTRate(){try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=inr');const d=await r.json();if(d&&d.tether&&d.tether.inr)usdtToInr=d.tether.inr}catch(e){}}
+
+        function methodRegionsMatch(m,region){const wanted=String(region||'').toLowerCase();const list=Array.isArray(m.regions)?m.regions.map(x=>String(x).toLowerCase()):[];if(list.length)return list.includes(wanted);return !m.region||String(m.region).toLowerCase()===wanted}
+
+        function renderPaymentMethods(){
+            const pkgId=getPackageId();selectedRegion=getRegion();if(!pkgId){document.getElementById('paymentMethods').innerHTML='<div style="text-align:center;padding:20px"><p>❌ No package selected.</p></div>';return}
+            db.collection('packagePrices').doc('packages').get().then(async(doc)=>{await fetchUSDTRate();if(!doc.exists||!doc.data()[pkgId])throw new Error('Package not found');const pkg={id:pkgId,...doc.data()[pkgId]};selectedPackage=pkg;const inrAmount=pkg.inr||0,bdtAmount=Math.round(inrAmount*1.4),usdtAmount=pkg.usdt||(inrAmount/usdtToInr);document.getElementById('pkgName').textContent=pkg.name||'Package';document.getElementById('pkgDuration').textContent=pkg.duration||'-';document.getElementById('totalAmount').textContent=selectedRegion==='bangladesh'?'৳'+bdtAmount.toLocaleString()+' BDT':selectedRegion==='india'?'₹'+inrAmount.toLocaleString()+' INR':usdtAmount.toFixed(2)+' USDT';document.getElementById('regionFlag').textContent=selectedRegion==='bangladesh'?'🇧🇩':selectedRegion==='india'?'🇮🇳':'🌍';document.getElementById('regionName').textContent=regionNames[selectedRegion]||'Worldwide';document.getElementById('regionDesc').textContent='Available payment methods';
+
+            db.collection('paymentMethods').onSnapshot(snapshot=>{
+                const methods=[];snapshot.forEach(doc=>{const m={id:doc.id,...doc.data()};if(m.isActive===false||m.enabled===false||m.packagePayment===false)return;if(!methodRegionsMatch(m,selectedRegion))return;methods.push(m)});
+                const container=document.getElementById('paymentMethods');
+                if(!methods.length){container.innerHTML='<div style="text-align:center;padding:20px;color:rgba(255,255,255,.55)"><p>No active payment methods available for this region.</p></div>';return}
+                const amount=selectedRegion==='bangladesh'?'৳'+bdtAmount.toLocaleString()+' BDT':selectedRegion==='india'?'₹'+inrAmount.toLocaleString()+' INR':usdtAmount.toFixed(2)+' USDT';
+                container.innerHTML=methods.map((m,i)=>{
+                    const logo=methodLogos[m.id]||'';
+                    const name=methodNames[m.id]||m.name||m.method||m.label||m.id;
+                    const inst=m.instruction||m.action||'Send Payment';
+                    
+                    // Logo HTML - onerror এ fallback দেখাবে
+                    const logoHtml = logo ? 
+                        `<img src="${logo}" alt="${name}" class="method-logo" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'method-logo-fallback\\'>💳</span>'">` :
+                        '<span class="method-logo-fallback">💳</span>';
+                    
+                    return `<a href="#" class="payment-method" onclick="selectMethod('${m.id}'); return false;">
+                        <div class="left">
+                            ${logoHtml}
+                            <div class="info">
+                                <div class="name">${name}</div>
+                                <div class="desc">${inst} · ${amount}</div>
+                            </div>
+                        </div>
+                        <div class="right">${i===0?'<span class="badge">Popular</span>':''}<span class="arrow">→</span></div>
+                    </a>`
+                }).join('')
+            },error=>{console.error(error);document.getElementById('paymentMethods').innerHTML='<div style="text-align:center;padding:20px"><p>❌ Error loading payment methods</p></div>'})
+            }).catch(error=>{console.error(error);document.getElementById('paymentMethods').innerHTML='<div style="text-align:center;padding:20px"><p>❌ Error loading package</p></div>'})
+        }
+
+        function selectMethod(methodId){const pkgId=getPackageId();window.location.href='payment-final.html?package='+pkgId+'&method='+methodId+'&region='+selectedRegion+'&from='+fromPage}
+
+        auth.onAuthStateChanged(user=>{setBackButton();renderPaymentMethods()});
+    </script>
+</body>
+</html>
