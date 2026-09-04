@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet Transfer - ICE FISHING</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 120, 255, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 45%),
+                #0a0e1a;
+        }
+
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            user-select: none;
+            animation: fall linear infinite;
+        }
+        .particle.ice {
+            color: rgba(100, 200, 255, 0.05);
+            font-size: 0.9rem;
+        }
+        .particle.fish {
+            color: rgba(77, 201, 246, 0.04);
+            font-size: 1rem;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.05; }
+            90% { opacity: 0.05; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        /* ============================================================
+           TOAST NOTIFICATION (Top-right corner)
+           ============================================================ */
+        #toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            max-width: 360px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #ffffff;
+            transform: translateX(120%);
+            opacity: 0;
+            transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        #toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        #toast .toast-icon {
+            margin-right: 10px;
+        }
+
+        #toast .toast-close {
+            margin-left: 12px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: 0.3s;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        #toast .toast-close:hover {
+            opacity: 1;
+        }
+
+        /* Toast Types */
+        #toast.error {
+            background: rgba(255, 50, 50, 0.12);
+            border-color: rgba(255, 50, 50, 0.08);
+            color: #ff6b6b;
+        }
+
+        #toast.warning {
+            background: rgba(255, 165, 0, 0.10);
+            border-color: rgba(255, 165, 0, 0.06);
+            color: #ffa500;
+        }
+
+        #toast.success {
+            background: rgba(0, 255, 136, 0.08);
+            border-color: rgba(0, 255, 136, 0.05);
+            color: #00ff88;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-top: 8px;
+        }
+
+        .header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .brand .logo {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 20px rgba(77, 201, 246, 0.15));
+        }
+
+        .header .brand h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header .brand h1 span {
+            color: #4dc9f6;
+        }
+
+        .header .back-btn {
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
+        }
+
+        /* ============================================================
+           PAGE TITLE
+           ============================================================ */
+        .page-title {
+            margin-bottom: 20px;
+        }
+
+        .page-title h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .page-title p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ============================================================
+           BALANCE CARD
+           ============================================================ */
+        .balance-card {
+            background: rgba(255, 215, 0, 0.02);
+            border: 1px solid rgba(255, 215, 0, 0.04);
+            border-radius: 16px;
+            padding: 24px 22px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .balance-card .label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.15);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .balance-card .amount {
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700, #f0a500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 4px;
+        }
+
+        .balance-card .currency {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 400;
+        }
+
+        /* ============================================================
+           CONNECTED ACCOUNT CARD
+           ============================================================ */
+        .connected-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .connected-card .icon {
+            font-size: 1.6rem;
+            opacity: 0.3;
+        }
+
+        .connected-card .info {
+            flex: 1;
+        }
+
+        .connected-card .info .label {
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.08);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .connected-card .info .value {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4dc9f6;
+            margin-top: 2px;
+        }
+
+        .connected-card .info .value .none {
+            color: rgba(255, 255, 255, 0.08);
+            font-weight: 400;
+        }
+
+        .connected-card .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse-dot 2s infinite;
+        }
+
+        .connected-card .status-dot.inactive {
+            background: rgba(255, 255, 255, 0.05);
+            animation: none;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ============================================================
+           TRANSFER BUTTON
+           ============================================================ */
+        .btn-transfer {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4dc9f6, #2b8fc4);
+            color: #0a0e1a;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-transfer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(77, 201, 246, 0.2);
+        }
+
+        .btn-transfer:active {
+            transform: scale(0.97);
+        }
+
+        .btn-transfer:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-transfer .loader {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(10, 14, 26, 0.15);
+            border-top: 2px solid #0a0e1a;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.02);
+            letter-spacing: 2px;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .header .brand h1 { font-size: 1rem; }
+            .header .brand .logo { font-size: 1.5rem; }
+            .page-title h2 { font-size: 1.1rem; }
+            .balance-card .amount { font-size: 1.8rem; }
+            .btn-transfer { font-size: 0.85rem; padding: 14px; }
+            #toast { max-width: 300px; padding: 14px 16px; font-size: 0.75rem; top: 12px; right: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div id="particles"></div>
+
+    <!-- ============================================================
+       TOAST NOTIFICATION
+       ============================================================ -->
+    <div id="toast">
+        <span class="toast-icon" id="toastIcon">⚠️</span>
+        <span id="toastMessage">Toast message</span>
+        <button class="toast-close" onclick="hideToast()">✕</button>
+    </div>
+
+    <!-- ============================================================
+       CONTAINER
+       ============================================================ -->
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <span class="logo">🎣</span>
+                <h1>ICE <span>FISHING</span></h1>
+            </div>
+            <a href="dashboard.html" class="back-btn">← Back</a>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h2>💳 Wallet Transfer</h2>
+            <p>Transfer your wallet balance</p>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="label">Available Balance</div>
+            <div class="amount" id="walletBalance">0.00</div>
+            <div class="currency">USD</div>
+        </div>
+
+        <!-- Connected Account Card -->
+        <div class="connected-card">
+            <span class="icon">🔗</span>
+            <div class="info">
+                <div class="label">Connected Account</div>
+                <div class="value" id="connectedAccount">
+                    <span class="none">No account connected</span>
+                </div>
+            </div>
+            <span class="status-dot inactive" id="statusDot"></span>
+        </div>
+
+        <!-- Transfer Button -->
+        <button class="btn-transfer" id="transferBtn" onclick="handleTransfer()">
+            🔄 Transfer Balance
+        </button>
+
+        <!-- Footer -->
+        <div class="footer">
+            Rev.0 Fixed © 2026
+        </div>
+
+    </div>
+
+    <!-- ============================================================
+       FIREBASE SDK
+       ============================================================ -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // PARTICLES
+        // ============================================================
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const ice = ['❄️', '✦', '❄️', '✦'];
+            const fish = ['🐟', '🐠', '🐡'];
+
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                const isFish = Math.random() < 0.3;
+                el.className = 'particle ' + (isFish ? 'fish' : 'ice');
+                el.textContent = isFish ?
+                    fish[Math.floor(Math.random() * fish.length)] :
+                    ice[Math.floor(Math.random() * ice.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (Math.random() * 0.8 + 0.5) + 'rem';
+                el.style.animationDuration = (Math.random() * 18 + 12) + 's';
+                el.style.animationDelay = (Math.random() * 20) + 's';
+                container.appendChild(el);
+            }
+        })();
+
+        // ============================================================
+        // FIREBASE
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+        let connectedAccount = null;
+        let walletBalance = 0;
+        let transferMessage = 'insufficient'; // 'insufficient' | 'minimum' | 'freeze' | 'custom'
+        let minTransferAmount = 0;
+        let customTransferMessage = '';
+        let walletRateCache = null;
+        let walletRateTime = 0;
+
+        // ============================================================
+        // TOAST FUNCTIONS
+        // ============================================================
+        let toastTimer = null;
+
+        function showToast(message, type = 'error', icon = '⚠️') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            // Clear existing timer
+            if (toastTimer) {
+                clearTimeout(toastTimer);
+                toastTimer = null;
+            }
+
+            // Set content
+            toastIcon.textContent = icon;
+            toastMessage.textContent = message;
+            toast.className = 'toast ' + type;
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 50);
+
+            // Auto hide after 4 seconds
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+                toastTimer = null;
+            }, 4000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('show');
+            if (toastTimer) {
+                clearTimeout(toastTimer);
+                toastTimer = null;
+            }
+        }
+
+        // ============================================================
+        // LOAD USER DATA
+        // ============================================================
+        function walletNumber(v) {
+            const n = Number(v);
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        function walletCurrency(data) {
+            return String(
+                data.currency || data.depositCurrency || data.paymentCurrency ||
+                data.currencyCode || data.methodCurrency || 'USD'
+            ).trim().toUpperCase();
+        }
+
+        function walletAmount(data) {
+            const candidates = [
+                data.amount, data.depositAmount, data.requestedAmount,
+                data.paidAmount, data.totalAmount, data.value
+            ];
+            for (const v of candidates) {
+                const n = Number(v);
+                if (Number.isFinite(n) && n >= 0) return n;
+            }
+            return 0;
+        }
+
+        async function getWalletRates() {
+            const now = Date.now();
+            if (walletRateCache && now - walletRateTime < 10 * 60 * 1000) return walletRateCache;
+            // INR-based feed + safe fallback so a temporary API failure does not hide the wallet.
+            const fallback = { USD: 1 / 88, BDT: 122.5 / 88 };
+            try {
+                const response = await fetch('https://open.er-api.com/v6/latest/INR', {cache:'no-store'});
+                const json = await response.json();
+                if (json && json.result === 'success' && json.rates) {
+                    const usd = Number(json.rates.USD);
+                    const bdt = Number(json.rates.BDT);
+                    if (Number.isFinite(usd) && usd > 0 && Number.isFinite(bdt) && bdt > 0) {
+                        walletRateCache = {USD: usd, BDT: bdt};
+                        walletRateTime = now;
+                        return walletRateCache;
+                    }
+                }
+            } catch (e) { console.warn('Wallet exchange-rate fetch failed, using fallback rates:', e); }
+            walletRateCache = fallback;
+            walletRateTime = now;
+            return walletRateCache;
+        }
+
+        function walletAmountToUSD(amount, currency, rates) {
+            const c = String(currency || 'USD').toUpperCase();
+            if (c === 'USD' || c === 'USDT' || c === 'USDC') return amount;
+            if (!rates) return null;
+            if (c === 'INR' && Number.isFinite(Number(rates.USD))) return amount * Number(rates.USD);
+            if (c === 'BDT' && Number(rates.USD) > 0 && Number(rates.BDT) > 0) {
+                return amount * Number(rates.USD) / Number(rates.BDT);
+            }
+            return amount;
+        }
+
+        async function refreshWalletDisplay(userId, fallbackBalance) {
+            const baseBalance = walletNumber(fallbackBalance);
+            try {
+                const sources = [];
+                const mainSnap = await db.collection('depositRequests').where('userId','==',userId).get();
+                mainSnap.forEach(doc => sources.push(doc.data() || {}));
+
+                if (!sources.length) {
+                    try {
+                        const oldSnap = await db.collection('deposits').where('userId','==',userId).get();
+                        oldSnap.forEach(doc => sources.push(doc.data() || {}));
+                    } catch (e) { console.warn('Legacy deposits read failed:', e); }
+                }
+
+                const approved = sources.filter(d => {
+                    const st = String(d.status || d.paymentStatus || d.requestStatus || '').trim().toLowerCase();
+                    return st === 'approved' || st === 'approve' || st === 'completed' || st === 'complete';
+                });
+
+                if (!approved.length) {
+                    walletBalance = baseBalance;
+                    document.getElementById('walletBalance').textContent = baseBalance.toFixed(2);
+                    return;
+                }
+
+                const rates = await getWalletRates();
+                let rawTotal = 0, convertedTotal = 0;
+                for (const d of approved) {
+                    const amount = walletAmount(d);
+                    if (!amount) continue;
+                    const usd = walletAmountToUSD(amount, walletCurrency(d), rates);
+                    if (usd === null) continue;
+                    rawTotal += amount;
+                    convertedTotal += usd;
+                }
+
+                let displayBalance = baseBalance;
+                if (rawTotal > 0 && convertedTotal >= 0) {
+                    displayBalance = Math.max(0, baseBalance - rawTotal + convertedTotal);
+                }
+                walletBalance = displayBalance;
+                document.getElementById('walletBalance').textContent = displayBalance.toFixed(2);
+            } catch (e) {
+                console.warn('Wallet display correction failed:', e);
+                walletBalance = baseBalance;
+                document.getElementById('walletBalance').textContent = baseBalance.toFixed(2);
+            }
+        }
+
+        function watchWallet(userId, fallbackBalance) {
+            refreshWalletDisplay(userId, fallbackBalance);
+            const stableFallback = walletNumber(fallbackBalance);
+            const ref = db.collection('depositRequests').where('userId','==',userId);
+            ref.onSnapshot(() => refreshWalletDisplay(userId, stableFallback),
+                           () => refreshWalletDisplay(userId, stableFallback));
+        }
+
+        async function loadUserData(user) {
+            currentUser = user;
+
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                const data = userDoc.exists ? (userDoc.data() || {}) : {};
+                const baseBalance = walletNumber(data.walletBalance);
+                walletBalance = baseBalance;
+                document.getElementById('walletBalance').textContent = baseBalance.toFixed(2);
+                watchWallet(user.uid, baseBalance);
+            } catch (error) {
+                console.error('Error loading wallet:', error);
+            }
+
+            db.collection('userConnections').where('userId','==',user.uid).get()
+                .then((snapshot) => {
+                    const dot = document.getElementById('statusDot');
+                    const accountDisplay = document.getElementById('connectedAccount');
+                    if (snapshot.empty) {
+                        connectedAccount = null;
+                        accountDisplay.innerHTML = '<span class="none">No account connected</span>';
+                        dot.className = 'status-dot inactive';
+                        return;
+                    }
+                    const connections = snapshot.docs.map(doc => ({id:doc.id,...doc.data()}));
+                    connections.sort((a,b) => {
+                        const t = x => x?.createdAt?.toMillis ? x.createdAt.toMillis() :
+                            (x?.createdAt?.seconds ? x.createdAt.seconds*1000 : Number(x?.createdAt)||0);
+                        return t(b)-t(a);
+                    });
+                    connectedAccount = connections[0];
+                    const data = connectedAccount;
+                    const status = String(data.status || 'pending').toLowerCase();
+                    const statusLabel = status === 'active' ? '' : ' <span style="color:#ffa500;font-size:0.6rem;font-weight:400;">(Pending)</span>';
+                    accountDisplay.innerHTML = `${data.platformName || data.siteName || 'Platform'} — ${data.username || 'N/A'}${statusLabel}`;
+                    dot.className = status === 'active' ? 'status-dot' : 'status-dot inactive';
+                })
+                .catch((error) => {
+                    console.error('Error loading connection:', error);
+                    connectedAccount = null;
+                    document.getElementById('connectedAccount').innerHTML = '<span class="none">No account connected</span>';
+                    document.getElementById('statusDot').className = 'status-dot inactive';
+                });
+
+            db.collection('settings').doc('transferSettings').get()
+                .then((doc) => {
+                    if (!doc.exists) return;
+                    const data = doc.data() || {};
+                    minTransferAmount = walletNumber(data.minTransferAmount);
+                    transferMessage = data.messageType || 'insufficient';
+                    customTransferMessage = String(data.customMessage || '').trim();
+                })
+                .catch((error) => console.error('Error loading transfer settings:', error));
+        }
+
+        // ============================================================
+        // HANDLE TRANSFER
+        // ============================================================
+        async function handleTransfer() {
+            const btn = document.getElementById('transferBtn');
+            if (!currentUser) return showToast('Please login first.', 'error', '🔒');
+            if (!connectedAccount) return showToast('Please connect an account first.', 'error', '🔗');
+            if (String(connectedAccount.status || 'pending').toLowerCase() !== 'active') {
+                return showToast('Your connected profile is pending admin approval.', 'warning', '⏳');
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loader"></span> Checking...';
+
+            try {
+                // Always read the latest Admin Transfer Settings before deciding.
+                const settingsDoc = await db.collection('settings').doc('transferSettings').get();
+                const settings = settingsDoc.exists ? (settingsDoc.data() || {}) : {};
+                minTransferAmount = walletNumber(settings.minTransferAmount);
+                transferMessage = settings.messageType || 'insufficient';
+                customTransferMessage = String(settings.customMessage || '').trim();
+
+                // Make the transfer page balance match the Dashboard balance.
+                await refreshWalletDisplay(currentUser.uid, walletBalance);
+
+                // If Admin has not filled the minimum transfer amount, tell the
+                // user that a minimum must be configured before transfer.
+                if (!(minTransferAmount > 0)) {
+                    showToast('Minimum transfer amount has not been set by admin.', 'warning', '⚠️');
+                    return;
+                }
+
+                // If the user's balance is below the configured minimum, always
+                // enforce the minimum-transfer rule first.
+                if (walletBalance < minTransferAmount) {
+                    showToast(`Minimum transfer amount is $${minTransferAmount.toFixed(2)} USD.`, 'warning', '⚠️');
+                    return;
+                }
+
+                // When balance meets the limit, show EXACTLY the message option
+                // selected in Admin Settings, regardless of the current balance.
+                let message = '';
+                let type = 'warning';
+                let icon = '⚠️';
+                switch (transferMessage) {
+                    case 'minimum':
+                        message = `Minimum transfer amount is $${minTransferAmount.toFixed(2)} USD.`;
+                        break;
+                    case 'freeze':
+                        message = 'Your balance is frozen. Please update your package.';
+                        type = 'error'; icon = '❄️';
+                        break;
+                    case 'custom':
+                        message = customTransferMessage || 'Transfer failed. Please try again.';
+                        type = 'error'; icon = '❌';
+                        break;
+                    case 'insufficient':
+                    default:
+                        message = 'Insufficient balance. Minimum transfer amount required.';
+                        type = 'error'; icon = '❌';
+                        break;
+                }
+                showToast(message, type, icon);
+            } catch (error) {
+                console.error('Transfer check failed:', error);
+                showToast('Unable to check transfer settings. Please try again.', 'error', '❌');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🔄 Transfer Balance';
+            }
+        }
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadUserData(user);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+
+</body>
+</html>
