@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect Profile - ICE FISHING</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0a0e1a;font-family:Inter,sans-serif;padding:20px;color:#fff}
+.container{max-width:520px;margin:auto}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:12px}.brand .logo{font-size:2rem}
+.brand h1{font-size:1.3rem;font-weight:800}.brand h1 span{color:#4dc9f6}
+.back-btn{padding:8px 18px;border:1px solid #ffffff10;border-radius:10px;background:#ffffff05;color:#ffffff55;text-decoration:none;font-size:.7rem}
+.page-title{margin-bottom:20px}.page-title h2{font-size:1.4rem}.page-title p{font-size:.8rem;color:#ffffff35;margin-top:4px}
+.secure-badge{display:flex;align-items:center;gap:8px;background:#00ff8808;border:1px solid #00ff8810;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:.7rem;color:#ffffff45}
+.secure-badge strong{color:#00ff88}
+.section-label{font-size:.7rem;font-weight:600;color:#ffffff35;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:block}
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.platform-item{background:#ffffff05;border:1px solid #ffffff0b;border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;transition:.25s}
+.platform-item:hover{background:#ffffff09;border-color:#ffffff18}
+.platform-item.selected{border-color:#4dc9f640;background:#4dc9f60a}
+.platform-item .logo{width:52px;height:52px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#ffffff06;overflow:hidden}
+.platform-item .logo img{width:100%;height:100%;object-fit:contain;display:block}
+.fallback{font-size:.58rem;color:#ffffff60;font-weight:700}
+.platform-item .name{font-size:.62rem;font-weight:600;color:#ffffff75}
+.platform-item.selected .name{color:#4dc9f6}
+.selected-display{background:#ffffff05;border:1px solid #ffffff0b;border-radius:12px;padding:13px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.selected-display .label{font-size:.65rem;color:#ffffff30;text-transform:uppercase;letter-spacing:1px}
+.selected-display .value{font-size:.85rem;font-weight:600;color:#4dc9f6}
+.form-group{margin-bottom:16px}.form-group label{display:block;font-size:.7rem;color:#ffffff35;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.required{color:#ff6b6b}.form-group input{width:100%;padding:12px 16px;background:#ffffff06;border:1px solid #ffffff0b;border-radius:10px;font-family:Inter;color:#fff;outline:none}
+.form-group input::placeholder{color:#ffffff25}.form-group input:focus{border-color:#4dc9f640}
+.hint{font-size:.55rem;color:#ffffff20;margin-top:4px}
+.btn-connect{width:100%;padding:15px;border:0;border-radius:12px;background:linear-gradient(135deg,#4dc9f6,#2b8fc4);color:#0a0e1a;font-family:Inter;font-weight:700;cursor:pointer;margin-top:8px}
+.btn-connect:disabled{opacity:.45;cursor:not-allowed}
+.msg{padding:10px 14px;border-radius:10px;font-size:.75rem;margin:10px 0 2px;display:none}
+.msg.show{display:block}.msg.error{background:#ff32320f;color:#ff6b6b}.msg.success{background:#00ff880b;color:#00ff88}
+.admin-note{margin-top:16px;padding:12px;border-radius:10px;background:#ffffff03;text-align:center}
+.admin-note p{font-size:.55rem;color:#ffffff25}
+
+.connected-card{background:#ffffff05;border:1px solid #00ff8830;border-radius:16px;padding:20px;margin-bottom:16px;text-align:center}
+.connected-card .connected-logo{width:82px;height:82px;margin:0 auto 12px;border-radius:14px;background:#ffffff08;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.connected-card .connected-logo img{width:100%;height:100%;object-fit:contain}
+.connected-card h3{font-size:1rem;margin-bottom:5px;color:#4dc9f6}
+.connected-card .connected-site{font-size:.75rem;color:#ffffff65;margin-bottom:12px}
+.connected-card .connected-status{display:inline-block;padding:5px 10px;border-radius:999px;background:#00ff8810;color:#00ff88;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.connected-card .connected-user{font-size:.7rem;color:#ffffff55;margin-bottom:4px}
+.connected-card .connected-note{font-size:.58rem;color:#ffffff30;margin-top:12px}
+.hidden{display:none!important}
+@media(max-width:600px){body{padding:12px}.platform-grid{gap:8px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="brand"><span class="logo">🎣</span><h1>ICE <span>FISHING</span></h1></div>
+<a href="dashboard.html" class="back-btn">← Back</a>
+</div>
+
+<div class="page-title">
+<h2>🔗 Connect Profile</h2>
+<p>Select your platform and enter your account details</p>
+</div>
+
+<div class="secure-badge">🛡️ <span><strong>Secure Connection</strong> — Your data is encrypted and safe</span></div>
+<div id="connectedProfile" class="connected-card hidden"></div>
+
+
+<div id="connectOptions">
+<span class="section-label">📱 Select Platform</span>
+<div class="platform-grid" id="platformGrid"></div>
+
+<div class="selected-display">
+<span class="label">Selected:</span>
+<span class="value" id="selectedDisplay">None</span>
+</div>
+
+<form id="connectForm">
+<div class="form-group">
+<label>🏷️ Site Name <span class="required">*</span></label>
+<input type="text" id="siteName" placeholder="Select a platform or type manually" required>
+<div class="hint">Auto-fills when you select a platform</div>
+</div>
+
+<div class="form-group">
+<label>👤 Username / Account ID <span class="required">*</span></label>
+<input type="text" id="username" placeholder="Enter your account ID / Username" required>
+</div>
+
+<div id="msg" class="msg"><span id="msgText"></span></div>
+<button type="submit" class="btn-connect" id="connectBtn">🔗 Connect Platform</button>
+</form>
+
+</div>
+<div class="admin-note" id="adminNote"><p>🛠️ Your connected platforms will be visible to admin for verification</p></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig={
+ apiKey:"AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+ authDomain:"ice-fishing-c20bc.firebaseapp.com",
+ projectId:"ice-fishing-c20bc",
+ storageBucket:"ice-fishing-c20bc.firebasestorage.app",
+ messagingSenderId:"220872632937",
+ appId:"1:220872632937:android:71997f3fd7dba6293a90f8"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+const auth=firebase.auth();
+
+const LOGO_PATH="./assets/logo/";
+
+const platforms=[
+{id:"1xbet",name:"1xBet",logo:"1xbet.png"},
+{id:"22bet",name:"22Bet",logo:"22bet.png"},
+{id:"bet365",name:"Bet365",logo:"bet365.png"},
+{id:"betway",name:"Betway",logo:"betway.png"},
+{id:"dafabet",name:"Dafabet",logo:"dafabet.png"},
+{id:"leon",name:"Leon",logo:"leon.png"},
+{id:"megapari",name:"Megapari",logo:"megapari.png"},
+{id:"mostbet",name:"Mostbet",logo:"mostbet.png"},
+{id:"others",name:"Others",logo:null},
+{id:"parimatch",name:"Parimatch",logo:"parimatch.png"},
+{id:"pinup",name:"Pin-Up",logo:"pinup.png"},
+{id:"stake",name:"Stake",logo:"stake.png"},
+{id:"vbet",name:"VBET",logo:"vbet.png"}
+];
+
+let selectedPlatform=null;
+
+function renderPlatforms(){
+ const grid=document.getElementById("platformGrid");
+ grid.innerHTML="";
+ platforms.forEach(p=>{
+  const item=document.createElement("div");
+  item.className="platform-item";
+  item.dataset.id=p.id;
+
+  const logo=document.createElement("div");
+  logo.className="logo";
+
+  if(p.logo){
+   const img=document.createElement("img");
+   img.src=LOGO_PATH+encodeURIComponent(p.logo)+"?v=3";
+   img.alt=p.name;
+   img.loading="eager";
+   img.onerror=function(){
+    this.remove();
+    const f=document.createElement("span");
+    f.className="fallback";
+    f.textContent=p.name.substring(0,3).toUpperCase();
+    logo.appendChild(f);
+   };
+   logo.appendChild(img);
+  }else{
+   const f=document.createElement("span");
+   f.className="fallback";
+   f.textContent=p.name.substring(0,3).toUpperCase();
+   logo.appendChild(f);
+  }
+
+  const name=document.createElement("div");
+  name.className="name";
+  name.textContent=p.name;
+
+  item.appendChild(logo);
+  item.appendChild(name);
+
+  item.onclick=()=>selectPlatform(p.id);
+  grid.appendChild(item);
+ });
+}
+
+function selectPlatform(id){
+ selectedPlatform=id;
+ document.querySelectorAll(".platform-item").forEach(el=>{
+  el.classList.toggle("selected",el.dataset.id===id);
+ });
+ const platform=platforms.find(p=>p.id===id);
+ document.getElementById("selectedDisplay").textContent=platform?platform.name:"None";
+ const site=document.getElementById("siteName");
+ if(platform && platform.id!=="others") site.value=platform.name;
+ else {site.value="";site.placeholder="Enter site name";}
+}
+
+async function getExistingConnection(user){
+ const snap=await db.collection("userConnections")
+   .where("userId","==",user.uid)
+   .limit(1)
+   .get();
+ return snap.empty?null:{id:snap.docs[0].id,data:snap.docs[0].data()};
+}
+
+function showConnectedProfile(connection){
+ const box=document.getElementById("connectedProfile");
+ const options=document.getElementById("connectOptions");
+ const form=document.getElementById("connectForm");
+ const note=document.getElementById("adminNote");
+ const d=connection.data||{};
+ const platform=platforms.find(p=>p.id===d.platformId);
+ const logoFile=platform&&platform.logo?platform.logo:null;
+
+ box.innerHTML="";
+ const logoWrap=document.createElement("div");
+ logoWrap.className="connected-logo";
+ if(logoFile){
+   const img=document.createElement("img");
+   img.src=LOGO_PATH+encodeURIComponent(logoFile)+"?v=4";
+   img.alt=d.platformName||d.siteName||"Connected site";
+   img.onerror=()=>{logoWrap.innerHTML='<span class="fallback">'+((d.platformName||d.siteName||"SITE").substring(0,3).toUpperCase())+'</span>';};
+   logoWrap.appendChild(img);
+ }else{
+   const f=document.createElement("span");
+   f.className="fallback";
+   f.textContent=(d.platformName||d.siteName||"SITE").substring(0,3).toUpperCase();
+   logoWrap.appendChild(f);
+ }
+ box.appendChild(logoWrap);
+ const h=document.createElement("h3"); h.textContent="✓ Profile Connected"; box.appendChild(h);
+ const site=document.createElement("div"); site.className="connected-site"; site.textContent=d.siteName||d.platformName||"Connected Site"; box.appendChild(site);
+ const status=document.createElement("div"); status.className="connected-status"; status.textContent=d.status||"pending"; box.appendChild(status);
+ const usr=document.createElement("div"); usr.className="connected-user"; usr.textContent="Account: "+(d.username||"—"); box.appendChild(usr);
+ const platformText=document.createElement("div"); platformText.className="connected-user"; platformText.textContent="Platform: "+(d.platformName||"—"); box.appendChild(platformText);
+ const noteText=document.createElement("div"); noteText.className="connected-note"; noteText.textContent="You can connect only one profile. Your connected profile is shown here."; box.appendChild(noteText);
+
+ box.classList.remove("hidden");
+ options.classList.add("hidden");
+ form.classList.add("hidden");
+ note.classList.add("hidden");
+}
+
+async function checkExistingConnection(user){
+ try{
+   const connection=await getExistingConnection(user);
+   if(connection){
+     showConnectedProfile(connection);
+     return true;
+   }
+ }catch(err){
+   console.error("Connection check failed:",err);
+ }
+ return false;
+}
+
+document.getElementById("connectForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+
+ const msg=document.getElementById("msg");
+ const msgText=document.getElementById("msgText");
+ const btn=document.getElementById("connectBtn");
+ const siteName=document.getElementById("siteName").value.trim();
+ const username=document.getElementById("username").value.trim();
+
+ if(!selectedPlatform){
+  msgText.textContent="Please select a platform first.";
+  msg.className="msg show error";
+  return;
+ }
+ if(!siteName||!username){
+  msgText.textContent="Please fill in all required fields.";
+  msg.className="msg show error";
+  return;
+ }
+
+ const user=auth.currentUser;
+ if(!user){
+  msgText.textContent="Please login first.";
+  msg.className="msg show error";
+  return;
+ }
+
+ const alreadyConnected=await checkExistingConnection(user);
+ if(alreadyConnected){
+  msgText.textContent="A profile is already connected to this account.";
+  msg.className="msg show error";
+  return;
+ }
+
+ const platform=platforms.find(p=>p.id===selectedPlatform);
+ btn.disabled=true;
+ btn.textContent="Connecting...";
+
+ try{
+  await db.collection("userConnections").add({
+   userId:user.uid,
+   userName:user.displayName||"Player",
+   userEmail:user.email||"",
+   platformId:selectedPlatform,
+   platformName:platform?platform.name:"Unknown",
+   siteName:siteName,
+   username:username,
+   status:"pending",
+   createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  msgText.textContent="✅ Platform connected successfully!";
+  msg.className="msg show success";
+  document.getElementById("siteName").value="";
+  document.getElementById("username").value="";
+  selectedPlatform=null;
+  document.querySelectorAll(".platform-item").forEach(el=>el.classList.remove("selected"));
+  document.getElementById("selectedDisplay").textContent="None";
+ }catch(err){
+  console.error(err);
+  msgText.textContent="❌ Connection failed: "+err.message;
+  msg.className="msg show error";
+ }finally{
+  btn.disabled=false;
+  btn.textContent="🔗 Connect Platform";
+ }
+});
+
+auth.onAuthStateChanged(async user=>{
+ renderPlatforms();
+ if(user) await checkExistingConnection(user);
+});
+renderPlatforms();
+</script>
+</body>
+</html>
