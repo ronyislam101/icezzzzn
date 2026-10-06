@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ICE FISHING | Live Signals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+:root{color-scheme:light;--bg:#f7f6ef;--text:#173c31;--text-muted:#78877f;--accent:#1d5948;--line:#dce3d8;--primary:#1d5948;--secondary:#c9844f;--radius-md:18px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:radial-gradient(ellipse at 90% 0,#ecead7 0,transparent 45%),var(--bg);line-height:1.5}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:3px solid #c9844f;outline-offset:4px}
+.header{max-width:860px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:24px 28px;border-bottom:1px solid var(--line)}
+.header-left{display:flex;gap:14px;align-items:center}.back-btn{width:42px;height:42px;border:1px solid #d3ddd0;background:#ffffff80;border-radius:50%;color:var(--text);display:grid;place-items:center}.back-btn:hover{background:#fff}
+.header h1{font-size:12px;font-weight:800;letter-spacing:1.5px}.header h1 span{display:block;font-size:8px;letter-spacing:2px;color:var(--text-muted);margin-top:3px;font-weight:550}.header-status{border:1px solid #cbdaca;border-radius:30px;background:#e9efdf;color:#355a35;padding:7px 12px;font-size:9px;font-weight:700;letter-spacing:1.5px;white-space:nowrap}
+.container{max-width:740px;margin:0 auto;padding:38px 28px max(36px,env(safe-area-inset-bottom))}.hero{position:relative;margin-bottom:30px;padding-left:18px;border-left:3px solid #d5a372}.eyebrow{font-size:9px;font-weight:700;letter-spacing:2.4px;color:#92704e;margin-bottom:10px}.hero h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(35px,7vw,52px);font-weight:400;letter-spacing:-1.5px;line-height:1.12}.hero h2 span{color:#64824c;font-style:italic}.hero p{font-size:12px;color:var(--text-muted);margin-top:12px}
+.signal-card-main{padding:20px 0 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:transparent;box-shadow:none}.card-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 3px}.card-heading .label{font-size:10px;font-weight:750;letter-spacing:1.5px;text-transform:uppercase;color:#5c7162}.card-heading .label i{color:#b68a58;margin-right:7px}.card-note{font-size:8px;letter-spacing:1.8px;color:#9ba492}
+.prediction-wrapper{display:flex;flex-direction:column;align-items:center;width:100%;padding:0;--primary:#1d5948;--secondary:#c9844f;--text-muted:#78877f;--radius-md:18px}
+/* The signal sits directly on the page: no dark media box or border. */
+.prediction-box,.prediction-box.has-results{display:flex;align-items:center;justify-content:center;position:relative;width:100%;max-width:380px;height:260px;aspect-ratio:auto;min-height:0;margin:12px 0 4px;overflow:hidden;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none}
+.prediction-icon-large{display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease}.prediction-icon-large .icon-wrap{width:68px;height:68px;border-radius:50%;background:#e9efdf;border:1px solid #cddcc9;display:grid;place-items:center;font-size:2rem;color:var(--primary);animation:fastZoomBlink .8s ease-in-out infinite}.prediction-icon-large .fa-fish{animation:fishSwimBox 3.2s ease-in-out infinite}.prediction-icon-large .icon-label{font-size:11px;color:var(--text-muted);margin-top:14px;letter-spacing:.3px}
+.signal-display{display:none;position:absolute;inset:0;width:100%;height:100%;align-items:center;justify-content:center}.prediction-box .result-img{width:100%;height:100%;object-fit:contain;display:none;opacity:0;transition:opacity .6s ease}.prediction-box .result-img.show{display:block;opacity:1}.prediction-box .result-img.show.fade-in{animation:imgFadeIn .7s ease,fastZoomBlink .8s ease-in-out .7s infinite;transform-origin:center}.prediction-box .result-img[hidden]{display:none!important}
+@keyframes imgFadeIn{0%{opacity:0;transform:scale(.96)}100%{opacity:1;transform:scale(1)}}
+@keyframes fastZoomBlink{0%,100%{transform:scale(1);opacity:1}25%{transform:scale(.94);opacity:.7}50%{transform:scale(1.06);opacity:1}75%{transform:scale(.94);opacity:.7}}
+@keyframes fishSwimBox{0%,100%{transform:translateX(0) rotate(0)}50%{transform:translateX(6px) rotate(4deg)}}
+.prediction-box .box-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;background:#f7f6efe6;backdrop-filter:blur(4px);transition:opacity .4s}.prediction-box .box-loading.hidden{opacity:0;pointer-events:none}.spinner{width:36px;height:36px;border:3px solid #dfe7d9;border-top-color:var(--accent);border-radius:50%;animation:spin .9s linear infinite}.load-text{color:var(--text-muted);font-size:11px;margin-top:12px;letter-spacing:.5px}@keyframes spin{to{transform:rotate(360deg)}}
+#signalBadge{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 20px;border-radius:30px;border:1px solid #d5dece;background:#eaf0e3;color:#355547;font-size:14px;letter-spacing:.1px;font-weight:700;margin-bottom:4px}#signalBadge.red{color:#a63a40;background:#f7e8e4;border-color:#ead4cd}#signalBadge.orange{color:#986028;background:#f4ebdc;border-color:#e9d9bd}#signalBadge.blue{color:#34647d;background:#e4eef1;border-color:#cfdfe5}.confidence-section,.confidence-bar,.section-caption{display:none!important}
+.btn-group{display:flex;gap:12px;margin:22px 0 30px}.btn{min-height:54px;border-radius:30px;border:1px solid transparent;display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:750;letter-spacing:.2px;transition:background .2s,transform .2s}.btn-primary{flex:1;color:#fff;background:var(--accent);box-shadow:0 7px 18px #1d594814}.btn-primary:hover{background:#124332}.btn-primary:active{transform:scale(.99)}.btn-primary:disabled{opacity:.6;cursor:wait}.btn-secondary{width:130px;color:#486451;background:transparent;border-color:#ccd9c7}.btn-secondary:hover{background:#eaf0e3}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat-item{padding:16px 13px;background:#ffffff90;border:1px solid #e2e5db;border-radius:18px;min-width:0}.stat-icon{color:#9baa81;font-size:12px;margin-bottom:12px}.stat-item .value{font-size:23px;font-weight:650;letter-spacing:-.8px;font-variant-numeric:tabular-nums;color:#294d3c}.stat-item .label{font-size:8px;letter-spacing:1.2px;color:#89917c;text-transform:uppercase;margin-top:3px}
+@media(max-width:480px){.header{padding:20px 18px}.header-left{gap:10px}.container{padding:28px 20px max(28px,env(safe-area-inset-bottom))}.hero{margin-bottom:26px}.prediction-box,.prediction-box.has-results{height:230px;max-width:340px}.stats-grid{gap:7px}.stat-item{padding:13px 10px}.stat-item .value{font-size:19px}.stat-item .label{font-size:7px;letter-spacing:.7px}.btn-secondary{width:112px}.header h1{font-size:11px}.header h1 span{font-size:7px}.card-note{font-size:7px;letter-spacing:1.2px}}
+@media(max-width:350px){.container{padding-left:16px;padding-right:16px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.header h1{letter-spacing:.6px}.prediction-box,.prediction-box.has-results{height:205px}.card-heading .label{letter-spacing:.8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" aria-label="Back to dashboard" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+            <h1>ICE FISHING<span>SIGNAL ATELIER</span></h1>
+        </div>
+        <span class="header-status"><i class="fas fa-circle" style="font-size:6px;margin-right:4px;"></i> LIVE</span>
+    </div>
+
+    <div class="container">
+
+        <div class="hero">
+            <div class="eyebrow">ICE FISHING / THE LIVE COLLECTION</div>
+            <h2>A fresh <span>perspective.</span></h2>
+            <p>Your signal, beautifully in focus.</p>
+        </div>
+
+        <div class="signal-card-main">
+            <div class="card-heading"><div class="label"><i class="fas fa-bolt"></i> Current Signal</div><span class="card-note">LIVE EDITION</span></div>
+            <div class="prediction-wrapper">
+                <div class="prediction-box" id="signalVisual">
+                    <div class="box-loading hidden" id="boxLoading">
+                        <div class="spinner"></div>
+                        <div class="load-text">Loading prediction...</div>
+                    </div>
+                    <div class="prediction-icon-large" id="placeholderBox">
+                        <div class="icon-wrap"><i class="fas fa-fish"></i></div>
+                        <div class="icon-label">Awaiting Prediction</div>
+                    </div>
+                    <div class="signal-display" id="signalDisplay" aria-live="polite">
+                        <img class="result-img signal-image" id="signalImage" src="" alt="Signal" decoding="async" />
+                        <video class="result-img signal-video" id="signalVideo" hidden muted autoplay loop playsinline preload="metadata" aria-label="Signal video"></video>
+                    </div>
+                </div>
+                <span id="signalBadge" class="signal-type-badge">Awaiting signal</span>
+                <div class="ai-prediction-display confidence-section">
+                    <div class="top"><span class="label"><i class="fas fa-robot" aria-hidden="true"></i> AI Prediction:</span><span class="percentage value" id="confidenceValue">—</span></div>
+                    <div class="confidence-bar"><div class="fill" id="confidenceFill"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" id="predictBtn">
+                <i class="fas fa-magic"></i> Get Signal
+            </button>
+            <button class="btn btn-secondary" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-bolt" aria-hidden="true"></i></div>
+                <div class="value" id="totalPredictions">0</div>
+                <div class="label">Total</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-chart-line" aria-hidden="true"></i></div>
+                <div class="value" id="accuracy">0%</div>
+                <div class="label">Accuracy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-star" aria-hidden="true"></i></div>
+                <div class="value" id="bonusHits">0</div>
+                <div class="label">Bonus</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon"><i class="fas fa-users" aria-hidden="true"></i></div>
+                <div class="value" id="liveUsers">0</div>
+                <div class="label">Live</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+
+    <script>
+        // ============================================================
+        // FIREBASE
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+            authDomain: "ice-fishing-c20bc.firebaseapp.com",
+            projectId: "ice-fishing-c20bc",
+            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+            messagingSenderId: "220872632937",
+            appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================================
+        // CLOUDINARY IMAGES
+        // ============================================================
+        const fishImages = {
+            'red': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-red_g9jmt4.png',
+            'yellow': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-yellow_zkxguo.png',
+            'blue': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-blue_niavh5.png',
+            'darkleaf': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040427/Compressed_DARK_LEAF_2_2_intxk4.png',
+            'whiteleaf': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/Compressed_white_leaf_wif8c8.png'
+        };
+
+        const signalTypes = {
+            'red': { label: 'Huge Reds', badge: 'red', color: '#f87171' },
+            'yellow': { label: 'Big Orange', badge: 'orange', color: '#fb923c' },
+            'blue': { label: 'Lil Blues', badge: 'blue', color: '#3b82f6' },
+            'darkleaf': { label: 'Dark Leaf', badge: 'orange', color: '#fb923c' },
+            'whiteleaf': { label: 'White Leaf', badge: 'blue', color: '#3b82f6' }
+        };
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let currentUser = null;
+        let stats = { total: 1249, accuracy: 94, bonusHits: 128, liveUsers: 1247 };
+        let isListening = false;
+        let unsubscribeSignals = null;
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const placeholderBox = document.getElementById('placeholderBox');
+        const signalDisplay = document.getElementById('signalDisplay');
+        const signalVisual = document.getElementById('signalVisual');
+        const signalImage = document.getElementById('signalImage');
+        const signalVideo = document.getElementById('signalVideo');
+        const boxLoading = document.getElementById('boxLoading');
+        const signalBadge = document.getElementById('signalBadge');
+        const confidenceValue = document.getElementById('confidenceValue');
+        const confidenceFill = document.getElementById('confidenceFill');
+        const predictBtn = document.getElementById('predictBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        // ============================================================
+        // FUNCTIONS
+        // ============================================================
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Media presentation only; signal selection stays in the existing controller.
+        function pauseSignalVideo() {
+            signalVideo.pause();
+        }
+
+        function renderSignalMedia(url, label) {
+            signalImage.classList.remove('show', 'fade-in');
+            signalVideo.classList.remove('show', 'fade-in');
+            const isVideo = /\.(mp4|webm|mov|m4v|ogv)(?:[?#]|$)|\/video\/upload\//i.test(url) || /^data:video\//i.test(url);
+            pauseSignalVideo();
+            signalImage.hidden = isVideo;
+            signalVideo.hidden = !isVideo;
+            signalVideo.removeAttribute('src');
+            if (isVideo) {
+                signalImage.removeAttribute('src');
+                signalVideo.src = url;
+                signalVideo.setAttribute('aria-label', label);
+                const playback = signalVideo.play();
+                if (playback) playback.catch(() => { signalVideo.controls = true; });
+            } else {
+                signalVideo.controls = false;
+                signalImage.src = url;
+                signalImage.alt = label;
+            }
+            const media = isVideo ? signalVideo : signalImage;
+            media.style.opacity = '0';
+            void media.offsetWidth;
+            media.style.opacity = '1';
+            media.classList.add('show', 'fade-in');
+        }
+
+        function showLoading() {
+            pauseSignalVideo();
+            placeholderBox.style.display = 'none';
+            boxLoading.classList.remove('hidden');
+            signalDisplay.classList.remove('active');
+            signalDisplay.style.display = 'none';
+            signalVisual.classList.add('has-results');
+        }
+
+        function showSignal(signal, animate = true) {
+            const imageUrl = fishImages[signal.imageKey] || fishImages['blue'];
+            const typeInfo = signalTypes[signal.imageKey] || signalTypes['blue'];
+
+            renderSignalMedia(imageUrl, signal.name || typeInfo.label);
+            boxLoading.classList.add('hidden');
+            signalVisual.classList.add('has-results');
+
+            signalBadge.textContent = signal.name || typeInfo.label;
+            signalBadge.className = 'signal-type-badge ' + (typeInfo.badge || 'blue');
+            signalVisual.style.setProperty('--signal-color', typeInfo.color || '#4d9cff');
+            signalVisual.classList.remove('signal-red', 'signal-yellow', 'signal-blue', 'signal-darkleaf', 'signal-whiteleaf');
+            signalVisual.classList.add('signal-' + signal.imageKey);
+
+            const confidence = Number.isFinite(Number(signal.confidence))
+                ? Number(signal.confidence)
+                : Math.floor(Math.random() * 20) + 75;
+            confidenceValue.textContent = confidence + '%';
+            confidenceFill.style.width = Math.max(0, Math.min(100, confidence)) + '%';
+
+            placeholderBox.style.display = 'none';
+            signalDisplay.style.display = 'flex';
+            signalDisplay.classList.add('active');
+
+            if (animate && signalVisual) {
+                signalVisual.classList.remove('animate-signal', 'reveal-signal');
+                signalVisual.classList.add('active-visual');
+                // Restart the same gentle media fade on each user-requested signal.
+                void signalVisual.offsetWidth;
+                signalVisual.classList.add('reveal-signal');
+            }
+        }
+
+        function randomSignal() {
+            const keys = ['red', 'yellow', 'blue', 'darkleaf', 'whiteleaf'];
+            const randomKey = keys[Math.floor(Math.random() * keys.length)];
+            const typeInfo = signalTypes[randomKey];
+            return {
+                name: typeInfo.label,
+                imageKey: randomKey,
+                confidence: Math.floor(Math.random() * 20) + 75
+            };
+        }
+
+        function showDefaultSignal() {
+            showSignal(randomSignal());
+        }
+
+        function showNoSignal() {
+            pauseSignalVideo();
+            boxLoading.classList.add('hidden');
+            placeholderBox.style.display = 'flex';
+            signalDisplay.classList.remove('active');
+            signalDisplay.style.display = 'none';
+            signalVisual.classList.remove('has-results');
+            confidenceValue.textContent = '—';
+            signalBadge.textContent = 'Awaiting signal';
+            signalBadge.className = 'signal-type-badge';
+        }
+
+        function updateStats() {
+            document.getElementById('totalPredictions').textContent = stats.total.toLocaleString();
+            document.getElementById('accuracy').textContent = stats.accuracy + '%';
+            document.getElementById('bonusHits').textContent = stats.bonusHits;
+            document.getElementById('liveUsers').textContent = (stats.liveUsers / 1000).toFixed(1) + 'k';
+        }
+
+        // ============================================================
+        // ADMIN SIGNAL CONTROL — CLICK TO PREDICT ONLY
+        // Firestore document: settings/liveSignalControl
+        //
+        // Admin can control Single / Multiple / Random modes, but the
+        // user app NEVER shows or changes a signal automatically.
+        // A signal is shown only when the user clicks Get Signal.
+        // There is NO time-based rotation.
+        // One click = exactly ONE signal change.
+        // ============================================================
+        let liveControl = {
+            enabled: true,
+            mode: 'random',
+            selectedSignal: 'blue',
+            sequence: [],
+            version: 0
+        };
+        let controlUnsubscribe = null;
+        let predictionBusy = false;
+        let sequenceIndex = 0;
+
+        function normalizeSignal(raw) {
+            if (!raw) return null;
+            const imageKey = raw.imageKey || raw.id || raw.key;
+            if (!fishImages[imageKey]) return null;
+            const info = signalTypes[imageKey];
+            return {
+                name: raw.name || info.label,
+                imageKey,
+                confidence: Number.isFinite(Number(raw.confidence))
+                    ? Number(raw.confidence)
+                    : Math.floor(Math.random() * 20) + 75
+            };
+        }
+
+        function showControlledSignal(signal, countStats = true) {
+            const normalized = normalizeSignal(signal);
+            if (!normalized) return false;
+
+            showSignal(normalized, true);
+
+            if (countStats) {
+                stats.total += 1;
+                if (normalized.imageKey === 'red' || normalized.imageKey === 'yellow') {
+                    stats.bonusHits += 1;
+                }
+                stats.accuracy = Math.min(98, Math.max(85,
+                    stats.accuracy + (Math.random() > 0.6 ? 1 : -1)
+                ));
+                updateStats();
+            }
+            return true;
+        }
+
+        // Returns ONE signal only. Nothing is shown until this function is called.
+        function getNextSignalForClick() {
+            if (!liveControl.enabled) return null;
+
+            // Admin Manual Single: always show the currently selected signal.
+            if (liveControl.mode === 'single') {
+                return {
+                    imageKey: liveControl.selectedSignal,
+                    name: signalTypes[liveControl.selectedSignal]?.label
+                };
+            }
+
+            // Admin Manual Multiple / sequence: advance exactly one item per click.
+            if (liveControl.mode === 'sequence') {
+                const list = Array.isArray(liveControl.sequence)
+                    ? liveControl.sequence.filter(key => !!fishImages[key])
+                    : [];
+
+                if (!list.length) return null;
+
+                if (sequenceIndex >= list.length) sequenceIndex = 0;
+                const key = list[sequenceIndex];
+                sequenceIndex = (sequenceIndex + 1) % list.length;
+
+                return {
+                    imageKey: key,
+                    name: signalTypes[key]?.label
+                };
+            }
+
+            // Random mode: generate only when the user clicks Get Signal.
+            return randomSignal();
+        }
+
+        function subscribeToLiveSignalControl() {
+            if (controlUnsubscribe) controlUnsubscribe();
+
+            controlUnsubscribe = db.collection('settings')
+                .doc('liveSignalControl')
+                .onSnapshot((doc) => {
+                    if (!doc.exists) {
+                        liveControl = {
+                            enabled: true,
+                            mode: 'random',
+                            selectedSignal: 'blue',
+                            sequence: [],
+                            version: 0
+                        };
+                        sequenceIndex = 0;
+                        return;
+                    }
+
+                    const data = doc.data() || {};
+                    const nextMode = ['random', 'single', 'sequence'].includes(data.mode)
+                        ? data.mode : 'random';
+                    const nextSelected = fishImages[data.selectedSignal]
+                        ? data.selectedSignal : 'blue';
+                    const nextSequence = Array.isArray(data.sequence)
+                        ? data.sequence.filter(key => !!fishImages[key]) : [];
+
+                    // Admin changes are received silently. They NEVER render
+                    // a new signal and NEVER change the current visible signal.
+                    // Only Get Signal may advance/show a prediction.
+                    const oldMode = liveControl.mode;
+                    const oldSequence = Array.isArray(liveControl.sequence) ? liveControl.sequence : [];
+                    const sequenceChanged =
+                        oldMode !== nextMode ||
+                        oldSequence.length !== nextSequence.length ||
+                        oldSequence.some((v, i) => v !== nextSequence[i]);
+
+                    liveControl = {
+                        enabled: data.enabled !== false,
+                        mode: nextMode,
+                        selectedSignal: nextSelected,
+                        sequence: nextSequence,
+                        version: Number(data.version || 0)
+                    };
+
+                    // A newly selected/changed queue starts from item 1,
+                    // but it is NOT displayed until Get Signal is clicked.
+                    if (nextMode !== 'sequence' || sequenceChanged) {
+                        sequenceIndex = 0;
+                    }
+                }, (error) => {
+                    console.error('Live signal control listener error:', error);
+                });
+        }
+
+        async function getSignal() {
+            // Prevent double/triple taps from changing multiple signals at once.
+            if (predictionBusy) return;
+            predictionBusy = true;
+
+            const oldText = predictBtn.innerHTML;
+            predictBtn.disabled = true;
+            predictBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+
+            try {
+                // Always show the loading experience first.
+                showLoading();
+
+                // Keep the analysis animation visible for about 2.4 seconds.
+                await new Promise(resolve => setTimeout(resolve, 2400));
+
+                const signal = getNextSignalForClick();
+
+                if (!signal) {
+                    showNoSignal();
+                    return;
+                }
+
+                // Render exactly ONE signal for this click, with the premium reveal.
+                showControlledSignal(signal, true);
+            } finally {
+                predictionBusy = false;
+                predictBtn.disabled = false;
+                predictBtn.innerHTML = oldText;
+            }
+        }
+
+        // Refresh does not generate a new signal. Get Signal is the only
+        // action that changes the prediction.
+        function refreshSignal() {
+            // Refresh only re-reads admin settings. It never generates
+            // or displays a new signal.
+            subscribeToLiveSignalControl();
+        }
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                updateStats();
+                subscribeToLiveSignalControl();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
+        predictBtn.addEventListener('click', getSignal);
+        refreshBtn.addEventListener('click', refreshSignal);
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        updateStats();
+    </script>
+
+</body>
+</html>
