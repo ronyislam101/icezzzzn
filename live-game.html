@@ -1,502 +1,969 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ICE FISHING | Live Signals</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-
-:root{color-scheme:dark;--bg:#081514;--card:#102321;--border:#24413d;--text:#edf8f5;--text-secondary:#b0c8c2;--text-muted:#809f96;--blue:#72e7c2;--blue-dark:#3aa487;--green:#72e7c2;--red:#ff9393;--orange:#ffbd7d}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ICE FISHING | Live Signals</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root{
+    color-scheme:dark;
+    --bg:#081514;
+    --card:#102321;
+    --border:#24413d;
+    --text:#edf8f5;
+    --text-secondary:#b0c8c2;
+    --text-muted:#809f96;
+    --blue:#72e7c2;
+    --blue-dark:#3aa487;
+    --green:#72e7c2;
+    --red:#ff9393;
+    --orange:#ffbd7d;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:radial-gradient(ellipse at 50% 0,#163b32 0,transparent 55%),var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
-button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-button:focus-visible{outline:3px solid #c2ffe9;outline-offset:4px}
-.header{border-bottom:1px solid #ffffff0d;background:#081514e8;padding:18px max(20px,env(safe-area-inset-right));display:flex;justify-content:space-between;align-items:center;gap:12px}
-.header-left{display:flex;align-items:center;gap:12px}.back-btn{width:40px;height:40px;border:1px solid var(--border);border-radius:14px;background:#ffffff05;color:var(--text);display:grid;place-items:center}
-.header h1{font-size:13px;letter-spacing:1.4px;font-weight:750}.header h1 span{display:block;font-size:9px;letter-spacing:2px;color:var(--text-muted);margin-top:2px}
-.header-status{font-size:10px;letter-spacing:1.3px;color:var(--green);display:flex;align-items:center;gap:7px;border:1px solid #72e7c233;border-radius:30px;padding:6px 10px;background:#72e7c209}
-.container{max-width:760px;margin:auto;padding:34px 24px max(34px,env(safe-area-inset-bottom))}.hero{text-align:left;margin-bottom:26px}.eyebrow{font-size:10px;letter-spacing:2.4px;color:var(--green);font-weight:700;margin-bottom:10px}.hero h2{font-size:clamp(28px,5vw,40px);line-height:1.15;font-weight:650;letter-spacing:-1.4px}.hero h2 span{color:var(--green)}.hero p{font-size:13px;color:var(--text-muted);margin-top:10px}
-.signal-card-main{background:linear-gradient(150deg,#142b27,#0e201d);border:1px solid var(--border);border-radius:24px;padding:20px;box-shadow:0 24px 70px #0003;overflow:hidden}.card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.card-heading .label{font-size:11px;color:var(--text-secondary);font-weight:650;letter-spacing:1.1px;text-transform:uppercase}.card-heading .label i{color:var(--green);margin-right:6px}.card-note{font-size:9px;letter-spacing:1.3px;color:var(--text-muted)}
-.placeholder-box,.signal-visual{width:100%;aspect-ratio:16/10;min-height:130px;border:1px solid #72e7c21a;border-radius:16px;background:#081713;position:relative;overflow:hidden}
-.placeholder-box{text-align:center;padding:0 18px;align-content:center}.placeholder-box>i{display:block;font-size:30px;color:var(--green);margin:0 auto 16px;opacity:.7}.main-text{font-size:17px;font-weight:600;color:var(--text-secondary)}.sub-text{font-size:12px;color:var(--text-muted);margin-top:6px}
-.signal-display{display:none;flex-direction:column;align-items:center;width:100%;gap:16px}.signal-display.active{display:flex}.signal-visual{display:flex;align-items:center;justify-content:center;isolation:isolate}
-.signal-image,.signal-video{width:100%;height:100%;object-fit:contain;display:block;position:absolute;inset:0}.signal-video[hidden],.signal-image[hidden]{display:none}.signal-visual.reveal-signal .signal-image,.signal-visual.reveal-signal .signal-video{animation:mediaFadeIn .7s ease both}
-@keyframes mediaFadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
-.signal-type-badge{font-size:14px;font-weight:650;letter-spacing:.2px;border:1px solid #ffffff18;padding:6px 18px;border-radius:100px;color:var(--text)}.signal-type-badge.red{color:#ffa7a7}.signal-type-badge.orange{color:#ffcc96}.signal-type-badge.blue{color:#9edaff}
-.confidence-section{width:100%;padding-top:4px}.confidence-section .top{display:flex;justify-content:space-between;gap:10px;font-size:11px;margin-bottom:8px;color:var(--text-muted)}.confidence-section .value{color:var(--green);font-weight:700}.confidence-bar{height:5px;background:#ffffff0a;overflow:hidden;border-radius:10px}.confidence-bar .fill{height:100%;width:0;background:linear-gradient(90deg,#3aa487,#9affd9);border-radius:10px;transition:width .7s ease}
-.signal-loading{height:100%;min-height:130px;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px 8px}.loading-spinner{width:36px;height:36px;border:3px solid #72e7c218;border-top-color:var(--green);border-radius:50%;animation:spin .9s linear infinite}.loading-text{color:var(--text-secondary);font-size:14px;font-weight:600;margin-top:14px}.loading-subtext{font-size:10px;color:var(--text-muted);margin-top:6px}@keyframes spin{to{transform:rotate(360deg)}}
-.btn-group{display:flex;gap:12px;margin:18px 0 30px}.btn{min-height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid transparent;font-size:13px;font-weight:700;transition:background .2s,transform .2s}.btn-primary{flex:1;background:#8af0ce;color:#09251b;box-shadow:0 8px 25px #72e7c215}.btn-primary:hover{background:#aaffdf}.btn-primary:active{transform:scale(.99)}.btn-primary:disabled{opacity:.65;cursor:wait}.btn-secondary{width:130px;background:#102321;color:var(--text-secondary);border-color:var(--border)}.btn-secondary:hover,.back-btn:hover{background:#1d3932}
-.section-caption{font-size:10px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat-item{text-align:left;border:1px solid #24413d;background:#0e211e;border-radius:16px;padding:16px 12px;min-width:0}.stat-item .value{font-size:23px;font-weight:600;letter-spacing:-.8px;color:var(--text);font-variant-numeric:tabular-nums}.stat-item .label{font-size:9px;color:var(--text-muted);margin-top:6px;letter-spacing:.7px;text-transform:uppercase}.stat-icon{font-size:12px;color:var(--green);margin-bottom:12px}.page-footer{text-align:center;font-size:10px;letter-spacing:1px;color:#64867c;margin-top:30px}
-@media(max-width:480px){.container{padding:26px 16px max(26px,env(safe-area-inset-bottom))}.header{padding:15px 16px}.signal-card-main{padding:16px;border-radius:22px}.hero{margin-bottom:22px}.stats-grid{gap:7px}.stat-item{padding:13px 9px}.stat-item .value{font-size:19px}.stat-item .label{font-size:8px;letter-spacing:.4px}.btn-secondary{width:108px}.card-note{font-size:8px}.header h1{font-size:11px}.header-status{font-size:9px}}
-@media(max-width:350px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.header h1{letter-spacing:.5px}.card-heading{gap:6px}.card-note{letter-spacing:.4px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:radial-gradient(ellipse at 50% 0,#163b32 0,transparent 55%),var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    line-height:1.5;
+}
+button{
+    font:inherit;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+}
+button:focus-visible{
+    outline:3px solid #c2ffe9;
+    outline-offset:4px;
+}
+.header{
+    border-bottom:1px solid #ffffff0d;
+    background:#081514e8;
+    padding:18px max(20px,env(safe-area-inset-right));
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-btn{
+    width:40px;
+    height:40px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#ffffff05;
+    color:var(--text);
+    display:grid;
+    place-items:center;
+}
+.header h1{
+    font-size:13px;
+    letter-spacing:1.4px;
+    font-weight:750;
+}
+.header h1 span{
+    display:block;
+    font-size:9px;
+    letter-spacing:2px;
+    color:var(--text-muted);
+    margin-top:2px;
+}
+.header-status{
+    font-size:10px;
+    letter-spacing:1.3px;
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    gap:7px;
+    border:1px solid #72e7c233;
+    border-radius:30px;
+    padding:6px 10px;
+    background:#72e7c209;
+}
+.container{
+    max-width:760px;
+    margin:auto;
+    padding:34px 24px max(34px,env(safe-area-inset-bottom));
+}
+.hero{text-align:left;margin-bottom:26px}
+.eyebrow{
+    font-size:10px;
+    letter-spacing:2.4px;
+    color:var(--green);
+    font-weight:700;
+    margin-bottom:10px;
+}
+.hero h2{
+    font-size:clamp(28px,5vw,40px);
+    line-height:1.15;
+    font-weight:650;
+    letter-spacing:-1.4px;
+}
+.hero h2 span{color:var(--green)}
+.hero p{
+    font-size:13px;
+    color:var(--text-muted);
+    margin-top:10px;
+}
+.signal-card-main{
+    background:linear-gradient(150deg,#142b27,#0e201d);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:20px;
+    box-shadow:0 24px 70px #0003;
+    overflow:hidden;
+}
+.card-heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:16px;
+}
+.card-heading .label{
+    font-size:11px;
+    color:var(--text-secondary);
+    font-weight:650;
+    letter-spacing:1.1px;
+    text-transform:uppercase;
+}
+.card-heading .label i{
+    color:var(--green);
+    margin-right:6px;
+}
+.card-note{
+    font-size:9px;
+    letter-spacing:1.3px;
+    color:var(--text-muted);
+}
+.btn-group{
+    display:flex;
+    gap:12px;
+    margin:18px 0 30px;
+}
+.btn{
+    min-height:54px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    border:1px solid transparent;
+    font-size:13px;
+    font-weight:700;
+    transition:background .2s,transform .2s;
+}
+.btn-primary{
+    flex:1;
+    background:#8af0ce;
+    color:#09251b;
+    box-shadow:0 8px 25px #72e7c215;
+}
+.btn-primary:hover{background:#aaffdf}
+.btn-primary:active{transform:scale(.99)}
+.btn-primary:disabled{opacity:.65;cursor:wait}
+.btn-secondary{
+    width:130px;
+    background:#102321;
+    color:var(--text-secondary);
+    border-color:var(--border);
+}
+.btn-secondary:hover,.back-btn:hover{background:#1d3932}
+.section-caption{
+    font-size:10px;
+    letter-spacing:2px;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    margin-bottom:12px;
+}
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+}
+.stat-item{
+    text-align:left;
+    border:1px solid #24413d;
+    background:#0e211e;
+    border-radius:16px;
+    padding:16px 12px;
+    min-width:0;
+}
+.stat-item .value{
+    font-size:23px;
+    font-weight:600;
+    letter-spacing:-.8px;
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+}
+.stat-item .label{
+    font-size:9px;
+    color:var(--text-muted);
+    margin-top:6px;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+}
+.stat-icon{
+    font-size:12px;
+    color:var(--green);
+    margin-bottom:12px;
+}
+
+.prediction-wrapper{
+    --primary:#00e5ff;
+    --secondary:#00b894;
+    --text-muted:#7aa99a;
+    --radius-md:16px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:.2rem 0;
+    width:100%;
+}
+.prediction-box{
+    width:100%;
+    max-width:440px;
+    aspect-ratio:16/10;
+    background:rgba(255,255,255,.02);
+    border:1.5px solid rgba(0,229,255,.06);
+    border-radius:var(--radius-md);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    backdrop-filter:blur(4px);
+    transition:border-color .4s,box-shadow .4s;
+    box-shadow:0 8px 30px rgba(0,0,0,.2);
+    margin-bottom:.8rem;
+    min-height:130px;
+    box-sizing:border-box;
+}
+.prediction-box.has-results{
+    border-color:rgba(0,229,255,.10);
+    box-shadow:0 8px 40px rgba(0,229,255,.02);
+}
+.prediction-icon-large{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    transition:opacity .5s ease;
+}
+.prediction-icon-large .icon-wrap{
+    width:68px;
+    height:68px;
+    border-radius:50%;
+    background:radial-gradient(
+        circle at 40% 35%,
+        rgba(0,229,255,.04),
+        rgba(0,229,255,.01)
+    );
+    border:2px solid rgba(0,229,255,.06);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    color:var(--primary);
+    text-shadow:0 0 40px rgba(0,229,255,.04);
+    position:relative;
+    animation:fastZoomBlink .8s ease-in-out infinite;
+}
+.prediction-icon-large .icon-wrap .fa-fish{
+    animation:fishSwimBox 3.2s ease-in-out infinite;
+}
+@keyframes fishSwimBox{
+    0%,100%{transform:translateX(0) rotate(0deg)}
+    50%{transform:translateX(6px) rotate(4deg)}
+}
+@keyframes fastZoomBlink{
+    0%,100%{transform:scale(1);opacity:1}
+    25%{transform:scale(.94);opacity:.7}
+    50%{transform:scale(1.06);opacity:1}
+    75%{transform:scale(.94);opacity:.7}
+}
+.prediction-icon-large .icon-label{
+    font-size:.65rem;
+    font-weight:600;
+    color:var(--text-muted);
+    margin-top:6px;
+    letter-spacing:.5px;
+}
+.signal-display{
+    display:none;
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    align-items:center;
+    justify-content:center;
+}
+.prediction-box .result-img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:none;
+    opacity:0;
+    transition:opacity .6s ease;
+}
+.prediction-box .result-img.show{
+    display:block;
+    opacity:1;
+}
+.prediction-box .result-img.fade-in{
+    animation:imgFadeIn .7s ease;
+}
+.prediction-box .result-img[hidden]{
+    display:none!important;
+}
+@keyframes imgFadeIn{
+    0%{opacity:0;transform:scale(.96)}
+    100%{opacity:1;transform:scale(1)}
+}
+.prediction-box .box-loading{
+    position:absolute;
+    inset:0;
+    background:rgba(7,14,26,.7);
+    backdrop-filter:blur(4px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:5;
+    border-radius:var(--radius-md);
+    transition:.4s;
+}
+.prediction-box .box-loading.hidden{
+    opacity:0;
+    pointer-events:none;
+}
+.prediction-box .box-loading .spinner{
+    width:36px;
+    height:36px;
+    border:3px solid rgba(0,229,255,.04);
+    border-top-color:var(--primary);
+    border-radius:50%;
+    animation:spin .9s linear infinite;
+}
+.prediction-box .box-loading .load-text{
+    color:var(--text-muted);
+    font-size:.65rem;
+    margin-top:8px;
+    letter-spacing:.5px;
+    font-weight:400;
+}
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+.ai-prediction-display{
+    font-size:.9rem;
+    font-weight:700;
+    color:var(--primary);
+    text-align:center;
+    margin-bottom:.5rem;
+    letter-spacing:.5px;
+    background:rgba(0,229,255,.02);
+    border:1px solid rgba(0,229,255,.04);
+    border-radius:60px;
+    padding:.35rem 1.2rem;
+    display:inline-block;
+    transition:all .3s ease;
+    box-sizing:border-box;
+}
+.ai-prediction-display i{
+    color:var(--secondary);
+    margin-right:6px;
+}
+.ai-prediction-display .percentage{
+    color:var(--primary);
+    font-weight:800;
+    transition:color .3s;
+}
+.ai-prediction-display .top{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+}
+.signal-type-badge,.confidence-bar{display:none}
+
+@media(max-width:480px){
+    .container{
+        padding:26px 16px max(26px,env(safe-area-inset-bottom));
+    }
+    .header{padding:15px 16px}
+    .signal-card-main{padding:16px;border-radius:22px}
+    .hero{margin-bottom:22px}
+    .stats-grid{gap:7px}
+    .stat-item{padding:13px 9px}
+    .stat-item .value{font-size:19px}
+    .stat-item .label{font-size:8px;letter-spacing:.4px}
+    .btn-secondary{width:108px}
+    .card-note{font-size:8px}
+    .header h1{font-size:11px}
+    .header-status{font-size:9px}
+}
+@media(max-width:350px){
+    .stats-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    .header h1{letter-spacing:.5px}
+    .card-heading{gap:6px}
+    .card-note{letter-spacing:.4px}
+}
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+        animation:none!important;
+        transition:none!important;
+    }
+}
 </style>
 </head>
 <body>
+<div class="header">
+    <div class="header-left">
+        <button class="back-btn" aria-label="Back to dashboard" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>ICE FISHING<span>LIVE SIGNAL STUDIO</span></h1>
+    </div>
+    <span class="header-status">
+        <i class="fas fa-circle" style="font-size:6px;margin-right:4px"></i>
+        LIVE
+    </span>
+</div>
 
-    <div class="header">
-        <div class="header-left">
-            <button class="back-btn" aria-label="Back to dashboard" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
-            <h1>ICE FISHING<span>LIVE SIGNAL STUDIO</span></h1>
-        </div>
-        <span class="header-status"><i class="fas fa-circle" style="font-size:6px;margin-right:4px;"></i> LIVE</span>
+<div class="container">
+    <div class="hero">
+        <div class="eyebrow">ICE FISHING / LIVE GAME</div>
+        <h2>Your next <span>signal.</span></h2>
+        <p>A clear view. One signal at a time.</p>
     </div>
 
-    <div class="container">
-
-        <div class="hero">
-            <div class="eyebrow">ICE FISHING / LIVE GAME</div>
-            <h2>Your next <span>signal.</span></h2>
-            <p>A clear view. One signal at a time.</p>
+    <div class="signal-card-main">
+        <div class="card-heading">
+            <div class="label">
+                <i class="fas fa-bolt"></i> Current Signal
+            </div>
+            <span class="card-note">SIGNAL VIEW</span>
         </div>
 
-        <div class="signal-card-main">
-            <div class="card-heading"><div class="label"><i class="fas fa-bolt"></i> Current Signal</div><span class="card-note">SIGNAL VIEW</span></div>
-
-            <div id="placeholderBox" class="placeholder-box">
-                <i class="fas fa-wave-square"></i>
-                <div class="main-text">Ready for signal</div>
-                <div class="sub-text">Click "Get Signal" to start</div>
-            </div>
-
-            <div id="signalDisplay" class="signal-display" aria-live="polite">
-                <div id="signalVisual" class="signal-visual">
-                    
-                    <img id="signalImage" class="signal-image" src="" alt="Signal" decoding="async" fetchpriority="high">
-                    <video id="signalVideo" class="signal-video" hidden muted autoplay loop playsinline preload="metadata" aria-label="Signal video"></video>
+        <div class="prediction-wrapper">
+            <div class="prediction-box" id="signalVisual">
+                <div class="box-loading hidden" id="boxLoading">
+                    <div class="spinner"></div>
+                    <div class="load-text">Loading prediction...</div>
                 </div>
-                <span class="signal-type-badge" id="signalBadge">—</span>
 
-                <div class="confidence-section">
-                    <div class="top">
-                        <span class="label">AI Confidence</span>
-                        <span class="value" id="confidenceValue">0%</span>
+                <div class="prediction-icon-large" id="placeholderBox">
+                    <div class="icon-wrap">
+                        <i class="fas fa-fish"></i>
                     </div>
-                    <div class="confidence-bar">
-                        <div class="fill" id="confidenceFill"></div>
-                    </div>
+                    <div class="icon-label">Awaiting Prediction</div>
+                </div>
+
+                <div class="signal-display" id="signalDisplay" aria-live="polite">
+                    <img
+                        class="result-img signal-image"
+                        id="signalImage"
+                        src=""
+                        alt="Signal"
+                        decoding="async"
+                    >
+                    <video
+                        class="result-img signal-video"
+                        id="signalVideo"
+                        hidden
+                        muted
+                        autoplay
+                        loop
+                        playsinline
+                        preload="metadata"
+                        aria-label="Signal video"
+                    ></video>
+                </div>
+            </div>
+
+            <span id="signalBadge" class="signal-type-badge">—</span>
+
+            <div class="ai-prediction-display confidence-section">
+                <div class="top">
+                    <span class="label">
+                        <i class="fas fa-robot" aria-hidden="true"></i>
+                        AI Prediction:
+                    </span>
+                    <span class="percentage value" id="confidenceValue">—</span>
+                </div>
+                <div class="confidence-bar">
+                    <div class="fill" id="confidenceFill"></div>
                 </div>
             </div>
         </div>
-
-        <div class="btn-group">
-            <button class="btn btn-primary" id="predictBtn">
-                <i class="fas fa-magic"></i> Get Signal
-            </button>
-            <button class="btn btn-secondary" id="refreshBtn">
-                <i class="fas fa-sync-alt"></i> Refresh
-            </button>
-        </div>
-
-        <div class="section-caption">Session overview</div>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-icon"><i class="fas fa-bolt" aria-hidden="true"></i></div>
-                <div class="value" id="totalPredictions">0</div>
-                <div class="label">Total</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon"><i class="fas fa-chart-line" aria-hidden="true"></i></div>
-                <div class="value" id="accuracy">0%</div>
-                <div class="label">Accuracy</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon"><i class="fas fa-star" aria-hidden="true"></i></div>
-                <div class="value" id="bonusHits">0</div>
-                <div class="label">Bonus</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon"><i class="fas fa-users" aria-hidden="true"></i></div>
-                <div class="value" id="liveUsers">0</div>
-                <div class="label">Live</div>
-            </div>
-        </div>
-
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
-    </script>
+    <div class="btn-group">
+        <button class="btn btn-primary" id="predictBtn">
+            <i class="fas fa-magic"></i> Get Signal
+        </button>
+        <button class="btn btn-secondary" id="refreshBtn">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+    </div>
 
-    <script>
-        // ============================================================
-        // FIREBASE
-        // ============================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
-            authDomain: "ice-fishing-c20bc.firebaseapp.com",
-            projectId: "ice-fishing-c20bc",
-            storageBucket: "ice-fishing-c20bc.firebasestorage.app",
-            messagingSenderId: "220872632937",
-            appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
-        };
+    <div class="section-caption">Session overview</div>
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-bolt" aria-hidden="true"></i>
+            </div>
+            <div class="value" id="totalPredictions">0</div>
+            <div class="label">Total</div>
+        </div>
 
-        // ============================================================
-        // CLOUDINARY IMAGES
-        // ============================================================
-        const fishImages = {
-            'red': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-red_g9jmt4.png',
-            'yellow': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-yellow_zkxguo.png',
-            'blue': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-blue_niavh5.png',
-            'darkleaf': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040427/Compressed_DARK_LEAF_2_2_intxk4.png',
-            'whiteleaf': 'https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/Compressed_white_leaf_wif8c8.png'
-        };
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-chart-line" aria-hidden="true"></i>
+            </div>
+            <div class="value" id="accuracy">0%</div>
+            <div class="label">Accuracy</div>
+        </div>
 
-        const signalTypes = {
-            'red': { label: 'Huge Reds', badge: 'red', color: '#f87171' },
-            'yellow': { label: 'Big Orange', badge: 'orange', color: '#fb923c' },
-            'blue': { label: 'Lil Blues', badge: 'blue', color: '#3b82f6' },
-            'darkleaf': { label: 'Dark Leaf', badge: 'orange', color: '#fb923c' },
-            'whiteleaf': { label: 'White Leaf', badge: 'blue', color: '#3b82f6' }
-        };
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-star" aria-hidden="true"></i>
+            </div>
+            <div class="value" id="bonusHits">0</div>
+            <div class="label">Bonus</div>
+        </div>
 
-        // ============================================================
-        // STATE
-        // ============================================================
-        let currentUser = null;
-        let stats = { total: 1249, accuracy: 94, bonusHits: 128, liveUsers: 1247 };
-        let isListening = false;
-        let unsubscribeSignals = null;
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-users" aria-hidden="true"></i>
+            </div>
+            <div class="value" id="liveUsers">0</div>
+            <div class="label">Live</div>
+        </div>
+    </div>
+</div>
 
-        // ============================================================
-        // DOM REFS
-        // ============================================================
-        const placeholderBox = document.getElementById('placeholderBox');
-        const signalDisplay = document.getElementById('signalDisplay');
-        const signalVisual = document.getElementById('signalVisual');
-        const signalImage = document.getElementById('signalImage');
-        const signalVideo = document.getElementById('signalVideo');
-        const signalBadge = document.getElementById('signalBadge');
-        const confidenceValue = document.getElementById('confidenceValue');
-        const confidenceFill = document.getElementById('confidenceFill');
-        const predictBtn = document.getElementById('predictBtn');
-        const refreshBtn = document.getElementById('refreshBtn');
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-        // ============================================================
-        // FUNCTIONS
-        // ============================================================
-        function goBack() {
-            window.location.href = 'dashboard.html';
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyDFZpetqOy3nHj27rUo7js6Bny79sxnYvU",
+    authDomain: "ice-fishing-c20bc.firebaseapp.com",
+    projectId: "ice-fishing-c20bc",
+    storageBucket: "ice-fishing-c20bc.firebasestorage.app",
+    messagingSenderId: "220872632937",
+    appId: "1:220872632937:android:71997f3fd7dba6293a90f8"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+const fishImages = {
+    red: "https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-red_g9jmt4.png",
+    yellow: "https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-yellow_zkxguo.png",
+    blue: "https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/fish-blue_niavh5.png",
+    darkleaf: "https://res.cloudinary.com/dw72p48ir/image/upload/v1788040427/Compressed_DARK_LEAF_2_2_intxk4.png",
+    whiteleaf: "https://res.cloudinary.com/dw72p48ir/image/upload/v1788040428/Compressed_white_leaf_wif8c8.png"
+};
+
+const signalTypes = {
+    red: {
+        label: "Huge Reds",
+        badge: "red",
+        color: "#f87171"
+    },
+    yellow: {
+        label: "Big Orange",
+        badge: "orange",
+        color: "#fb923c"
+    },
+    blue: {
+        label: "Lil Blues",
+        badge: "blue",
+        color: "#3b82f6"
+    },
+    darkleaf: {
+        label: "Dark Leaf",
+        badge: "orange",
+        color: "#fb923c"
+    },
+    whiteleaf: {
+        label: "White Leaf",
+        badge: "blue",
+        color: "#3b82f6"
+    }
+};
+
+let currentUser = null;
+let stats = {
+    total: 1249,
+    accuracy: 94,
+    bonusHits: 128,
+    liveUsers: 1247
+};
+let isListening = false;
+let unsubscribeSignals = null;
+
+const placeholderBox = document.getElementById("placeholderBox");
+const signalDisplay = document.getElementById("signalDisplay");
+const signalVisual = document.getElementById("signalVisual");
+const signalImage = document.getElementById("signalImage");
+const signalVideo = document.getElementById("signalVideo");
+const boxLoading = document.getElementById("boxLoading");
+const signalBadge = document.getElementById("signalBadge");
+const confidenceValue = document.getElementById("confidenceValue");
+const confidenceFill = document.getElementById("confidenceFill");
+const predictBtn = document.getElementById("predictBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+
+function goBack() {
+    window.location.href = "dashboard.html";
+}
+
+function pauseSignalVideo() {
+    signalVideo.pause();
+}
+
+function renderSignalMedia(url, label) {
+    signalImage.classList.remove("show", "fade-in");
+    signalVideo.classList.remove("show", "fade-in");
+
+    const isVideo =
+        /\.(mp4|webm|mov|m4v|ogv)(?:[?#]|$)|\/video\/upload\//i.test(url) ||
+        /^data:video\//i.test(url);
+
+    pauseSignalVideo();
+
+    signalImage.hidden = isVideo;
+    signalVideo.hidden = !isVideo;
+    signalVideo.removeAttribute("src");
+
+    if (isVideo) {
+        signalImage.removeAttribute("src");
+        signalVideo.src = url;
+        signalVideo.setAttribute("aria-label", label);
+
+        const playback = signalVideo.play();
+        if (playback) {
+            playback.catch(() => {
+                signalVideo.controls = true;
+            });
+        }
+    } else {
+        signalVideo.controls = false;
+        signalImage.src = url;
+        signalImage.alt = label;
+    }
+
+    const media = isVideo ? signalVideo : signalImage;
+
+    media.style.opacity = "0";
+    void media.offsetWidth;
+    media.style.opacity = "1";
+    media.classList.add("show", "fade-in");
+}
+
+function showLoading() {
+    pauseSignalVideo();
+    placeholderBox.style.display = "none";
+    boxLoading.classList.remove("hidden");
+    signalDisplay.classList.remove("active");
+    signalDisplay.style.display = "none";
+    signalVisual.classList.add("has-results");
+}
+
+function showSignal(signal, animate = true) {
+    const imageUrl = fishImages[signal.imageKey] || fishImages.blue;
+    const typeInfo = signalTypes[signal.imageKey] || signalTypes.blue;
+
+    renderSignalMedia(imageUrl, signal.name || typeInfo.label);
+    boxLoading.classList.add("hidden");
+    signalVisual.classList.add("has-results");
+
+    signalBadge.textContent = signal.name || typeInfo.label;
+    signalBadge.className = "signal-type-badge " + (typeInfo.badge || "blue");
+
+    signalVisual.style.setProperty(
+        "--signal-color",
+        typeInfo.color || "#4d9cff"
+    );
+
+    signalVisual.classList.remove(
+        "signal-red",
+        "signal-yellow",
+        "signal-blue",
+        "signal-darkleaf",
+        "signal-whiteleaf"
+    );
+    signalVisual.classList.add("signal-" + signal.imageKey);
+
+    const confidence = Number.isFinite(Number(signal.confidence))
+        ? Number(signal.confidence)
+        : Math.floor(Math.random() * 20) + 75;
+
+    confidenceValue.textContent = confidence + "%";
+    confidenceFill.style.width =
+        Math.max(0, Math.min(100, confidence)) + "%";
+
+    placeholderBox.style.display = "none";
+    signalDisplay.style.display = "flex";
+    signalDisplay.classList.add("active");
+
+    if (animate && signalVisual) {
+        signalVisual.classList.remove("animate-signal", "reveal-signal");
+        signalVisual.classList.add("active-visual");
+        void signalVisual.offsetWidth;
+        signalVisual.classList.add("reveal-signal");
+    }
+}
+
+function randomSignal() {
+    const keys = ["red", "yellow", "blue", "darkleaf", "whiteleaf"];
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+    const typeInfo = signalTypes[randomKey];
+
+    return {
+        name: typeInfo.label,
+        imageKey: randomKey,
+        confidence: Math.floor(Math.random() * 20) + 75
+    };
+}
+
+function showDefaultSignal() {
+    showSignal(randomSignal());
+}
+
+function showNoSignal() {
+    pauseSignalVideo();
+    boxLoading.classList.add("hidden");
+    placeholderBox.style.display = "flex";
+    signalDisplay.classList.remove("active");
+    signalDisplay.style.display = "none";
+    signalVisual.classList.remove("has-results");
+    confidenceValue.textContent = "—";
+}
+
+function updateStats() {
+    document.getElementById("totalPredictions").textContent =
+        stats.total.toLocaleString();
+
+    document.getElementById("accuracy").textContent =
+        stats.accuracy + "%";
+
+    document.getElementById("bonusHits").textContent =
+        stats.bonusHits;
+
+    document.getElementById("liveUsers").textContent =
+        (stats.liveUsers / 1000).toFixed(1) + "k";
+}
+
+let liveControl = {
+    enabled: true,
+    mode: "random",
+    selectedSignal: "blue",
+    sequence: [],
+    version: 0
+};
+
+let controlUnsubscribe = null;
+let predictionBusy = false;
+let sequenceIndex = 0;
+
+function normalizeSignal(raw) {
+    if (!raw) return null;
+
+    const imageKey = raw.imageKey || raw.id || raw.key;
+
+    if (!fishImages[imageKey]) return null;
+
+    const info = signalTypes[imageKey];
+
+    return {
+        name: raw.name || info.label,
+        imageKey,
+        confidence: Number.isFinite(Number(raw.confidence))
+            ? Number(raw.confidence)
+            : Math.floor(Math.random() * 20) + 75
+    };
+}
+
+function showControlledSignal(signal, countStats = true) {
+    const normalized = normalizeSignal(signal);
+
+    if (!normalized) return false;
+
+    showSignal(normalized, true);
+
+    if (countStats) {
+        stats.total += 1;
+
+        if (
+            normalized.imageKey === "red" ||
+            normalized.imageKey === "yellow"
+        ) {
+            stats.bonusHits += 1;
         }
 
-        // Media presentation only; signal selection stays in the existing controller.
-        function pauseSignalVideo() {
-            signalVideo.pause();
-        }
+        stats.accuracy = Math.min(
+            98,
+            Math.max(
+                85,
+                stats.accuracy + (Math.random() > 0.6 ? 1 : -1)
+            )
+        );
 
-        function renderSignalMedia(url, label) {
-            const isVideo = /\.(mp4|webm|mov|m4v|ogv)(?:[?#]|$)|\/video\/upload\//i.test(url) || /^data:video\//i.test(url);
-            pauseSignalVideo();
-            signalImage.hidden = isVideo;
-            signalVideo.hidden = !isVideo;
-            signalVideo.removeAttribute('src');
-            if (isVideo) {
-                signalImage.removeAttribute('src');
-                signalVideo.src = url;
-                signalVideo.setAttribute('aria-label', label);
-                const playback = signalVideo.play();
-                if (playback) playback.catch(() => { signalVideo.controls = true; });
-            } else {
-                signalVideo.controls = false;
-                signalImage.src = url;
-                signalImage.alt = label;
-            }
-        }
-
-        function showLoading() {
-            pauseSignalVideo();
-            placeholderBox.innerHTML = `
-                <div class="signal-loading">
-                    <div class="loading-spinner"></div>
-                    <div class="loading-text">Analyzing signal</div>
-                    <div class="loading-subtext">Scanning live patterns &amp; generating prediction</div>
-                </div>
-            `;
-            placeholderBox.style.display = 'block';
-            signalDisplay.classList.remove('active');
-            signalDisplay.style.display = 'none';
-        }
-
-        function showSignal(signal, animate = true) {
-            const imageUrl = fishImages[signal.imageKey] || fishImages['blue'];
-            const typeInfo = signalTypes[signal.imageKey] || signalTypes['blue'];
-
-            renderSignalMedia(imageUrl, signal.name || typeInfo.label);
-
-            signalBadge.textContent = signal.name || typeInfo.label;
-            signalBadge.className = 'signal-type-badge ' + (typeInfo.badge || 'blue');
-            signalVisual.style.setProperty('--signal-color', typeInfo.color || '#4d9cff');
-            signalVisual.classList.remove('signal-red', 'signal-yellow', 'signal-blue', 'signal-darkleaf', 'signal-whiteleaf');
-            signalVisual.classList.add('signal-' + signal.imageKey);
-
-            const confidence = Number.isFinite(Number(signal.confidence))
-                ? Number(signal.confidence)
-                : Math.floor(Math.random() * 20) + 75;
-            confidenceValue.textContent = confidence + '%';
-            confidenceFill.style.width = Math.max(0, Math.min(100, confidence)) + '%';
-
-            placeholderBox.style.display = 'none';
-            signalDisplay.style.display = 'flex';
-            signalDisplay.classList.add('active');
-
-            if (animate && signalVisual) {
-                signalVisual.classList.remove('animate-signal', 'reveal-signal');
-                signalVisual.classList.add('active-visual');
-                // Restart the same gentle media fade on each user-requested signal.
-                void signalVisual.offsetWidth;
-                signalVisual.classList.add('reveal-signal');
-            }
-        }
-
-        function randomSignal() {
-            const keys = ['red', 'yellow', 'blue', 'darkleaf', 'whiteleaf'];
-            const randomKey = keys[Math.floor(Math.random() * keys.length)];
-            const typeInfo = signalTypes[randomKey];
-            return {
-                name: typeInfo.label,
-                imageKey: randomKey,
-                confidence: Math.floor(Math.random() * 20) + 75
-            };
-        }
-
-        function showDefaultSignal() {
-            showSignal(randomSignal());
-        }
-
-        function showNoSignal() {
-            pauseSignalVideo();
-            placeholderBox.innerHTML = `
-                <i class="fas fa-wave-square"></i>
-                <div class="main-text">Ready for signal</div>
-                <div class="sub-text">Click "Get Signal" to start</div>
-            `;
-            placeholderBox.style.display = 'block';
-            signalDisplay.classList.remove('active');
-            signalDisplay.style.display = 'none';
-        }
-
-        function updateStats() {
-            document.getElementById('totalPredictions').textContent = stats.total.toLocaleString();
-            document.getElementById('accuracy').textContent = stats.accuracy + '%';
-            document.getElementById('bonusHits').textContent = stats.bonusHits;
-            document.getElementById('liveUsers').textContent = (stats.liveUsers / 1000).toFixed(1) + 'k';
-        }
-
-        // ============================================================
-        // ADMIN SIGNAL CONTROL — CLICK TO PREDICT ONLY
-        // Firestore document: settings/liveSignalControl
-        //
-        // Admin can control Single / Multiple / Random modes, but the
-        // user app NEVER shows or changes a signal automatically.
-        // A signal is shown only when the user clicks Get Signal.
-        // There is NO time-based rotation.
-        // One click = exactly ONE signal change.
-        // ============================================================
-        let liveControl = {
-            enabled: true,
-            mode: 'random',
-            selectedSignal: 'blue',
-            sequence: [],
-            version: 0
-        };
-        let controlUnsubscribe = null;
-        let predictionBusy = false;
-        let sequenceIndex = 0;
-
-        function normalizeSignal(raw) {
-            if (!raw) return null;
-            const imageKey = raw.imageKey || raw.id || raw.key;
-            if (!fishImages[imageKey]) return null;
-            const info = signalTypes[imageKey];
-            return {
-                name: raw.name || info.label,
-                imageKey,
-                confidence: Number.isFinite(Number(raw.confidence))
-                    ? Number(raw.confidence)
-                    : Math.floor(Math.random() * 20) + 75
-            };
-        }
-
-        function showControlledSignal(signal, countStats = true) {
-            const normalized = normalizeSignal(signal);
-            if (!normalized) return false;
-
-            showSignal(normalized, true);
-
-            if (countStats) {
-                stats.total += 1;
-                if (normalized.imageKey === 'red' || normalized.imageKey === 'yellow') {
-                    stats.bonusHits += 1;
-                }
-                stats.accuracy = Math.min(98, Math.max(85,
-                    stats.accuracy + (Math.random() > 0.6 ? 1 : -1)
-                ));
-                updateStats();
-            }
-            return true;
-        }
-
-        // Returns ONE signal only. Nothing is shown until this function is called.
-        function getNextSignalForClick() {
-            if (!liveControl.enabled) return null;
-
-            // Admin Manual Single: always show the currently selected signal.
-            if (liveControl.mode === 'single') {
-                return {
-                    imageKey: liveControl.selectedSignal,
-                    name: signalTypes[liveControl.selectedSignal]?.label
-                };
-            }
-
-            // Admin Manual Multiple / sequence: advance exactly one item per click.
-            if (liveControl.mode === 'sequence') {
-                const list = Array.isArray(liveControl.sequence)
-                    ? liveControl.sequence.filter(key => !!fishImages[key])
-                    : [];
-
-                if (!list.length) return null;
-
-                if (sequenceIndex >= list.length) sequenceIndex = 0;
-                const key = list[sequenceIndex];
-                sequenceIndex = (sequenceIndex + 1) % list.length;
-
-                return {
-                    imageKey: key,
-                    name: signalTypes[key]?.label
-                };
-            }
-
-            // Random mode: generate only when the user clicks Get Signal.
-            return randomSignal();
-        }
-
-        function subscribeToLiveSignalControl() {
-            if (controlUnsubscribe) controlUnsubscribe();
-
-            controlUnsubscribe = db.collection('settings')
-                .doc('liveSignalControl')
-                .onSnapshot((doc) => {
-                    if (!doc.exists) {
-                        liveControl = {
-                            enabled: true,
-                            mode: 'random',
-                            selectedSignal: 'blue',
-                            sequence: [],
-                            version: 0
-                        };
-                        sequenceIndex = 0;
-                        return;
-                    }
-
-                    const data = doc.data() || {};
-                    const nextMode = ['random', 'single', 'sequence'].includes(data.mode)
-                        ? data.mode : 'random';
-                    const nextSelected = fishImages[data.selectedSignal]
-                        ? data.selectedSignal : 'blue';
-                    const nextSequence = Array.isArray(data.sequence)
-                        ? data.sequence.filter(key => !!fishImages[key]) : [];
-
-                    // Admin changes are received silently. They NEVER render
-                    // a new signal and NEVER change the current visible signal.
-                    // Only Get Signal may advance/show a prediction.
-                    const oldMode = liveControl.mode;
-                    const oldSequence = Array.isArray(liveControl.sequence) ? liveControl.sequence : [];
-                    const sequenceChanged =
-                        oldMode !== nextMode ||
-                        oldSequence.length !== nextSequence.length ||
-                        oldSequence.some((v, i) => v !== nextSequence[i]);
-
-                    liveControl = {
-                        enabled: data.enabled !== false,
-                        mode: nextMode,
-                        selectedSignal: nextSelected,
-                        sequence: nextSequence,
-                        version: Number(data.version || 0)
-                    };
-
-                    // A newly selected/changed queue starts from item 1,
-                    // but it is NOT displayed until Get Signal is clicked.
-                    if (nextMode !== 'sequence' || sequenceChanged) {
-                        sequenceIndex = 0;
-                    }
-                }, (error) => {
-                    console.error('Live signal control listener error:', error);
-                });
-        }
-
-        async function getSignal() {
-            // Prevent double/triple taps from changing multiple signals at once.
-            if (predictionBusy) return;
-            predictionBusy = true;
-
-            const oldText = predictBtn.innerHTML;
-            predictBtn.disabled = true;
-            predictBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
-
-            try {
-                // Always show the loading experience first.
-                showLoading();
-
-                // Keep the analysis animation visible for about 2.4 seconds.
-                await new Promise(resolve => setTimeout(resolve, 2400));
-
-                const signal = getNextSignalForClick();
-
-                if (!signal) {
-                    showNoSignal();
-                    return;
-                }
-
-                // Render exactly ONE signal for this click, with the premium reveal.
-                showControlledSignal(signal, true);
-            } finally {
-                predictionBusy = false;
-                predictBtn.disabled = false;
-                predictBtn.innerHTML = oldText;
-            }
-        }
-
-        // Refresh does not generate a new signal. Get Signal is the only
-        // action that changes the prediction.
-        function refreshSignal() {
-            // Refresh only re-reads admin settings. It never generates
-            // or displays a new signal.
-            subscribeToLiveSignalControl();
-        }
-
-        // ============================================================
-        // AUTH CHECK
-        // ============================================================
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                currentUser = user;
-                updateStats();
-                subscribeToLiveSignalControl();
-            } else {
-                window.location.href = 'index.html';
-            }
-        });
-
-        // ============================================================
-        // EVENT LISTENERS
-        // ============================================================
-        predictBtn.addEventListener('click', getSignal);
-        refreshBtn.addEventListener('click', refreshSignal);
-
-        // ============================================================
-        // INIT
-        // ============================================================
         updateStats();
-    </script>
+    }
 
+    return true;
+}
+
+function getNextSignalForClick() {
+    if (!liveControl.enabled) return null;
+
+    if (liveControl.mode === "single") {
+        return {
+            imageKey: liveControl.selectedSignal,
+            name: signalTypes[liveControl.selectedSignal]?.label
+        };
+    }
+
+    if (liveControl.mode === "sequence") {
+        const list = Array.isArray(liveControl.sequence)
+            ? liveControl.sequence.filter(key => !!fishImages[key])
+            : [];
+
+        if (!list.length) return null;
+
+        if (sequenceIndex >= list.length) sequenceIndex = 0;
+
+        const key = list[sequenceIndex];
+        sequenceIndex = (sequenceIndex + 1) % list.length;
+
+        return {
+            imageKey: key,
+            name: signalTypes[key]?.label
+        };
+    }
+
+    return randomSignal();
+}
+
+function subscribeToLiveSignalControl() {
+    if (controlUnsubscribe) controlUnsubscribe();
+
+    controlUnsubscribe = db.collection("settings")
+        .doc("liveSignalControl")
+        .onSnapshot((doc) => {
+            if (!doc.exists) {
+                liveControl = {
+                    enabled: true,
+                    mode: "random",
+                    selectedSignal: "blue",
+                    sequence: [],
+                    version: 0
+                };
+
+                sequenceIndex = 0;
+                return;
+            }
+
+            const data = doc.data() || {};
+
+            const nextMode =
+                ["random", "single", "sequence"].includes(data.mode)
+                    ? data.mode
+                    : "random";
+
+            const nextSelected = fishImages[data.selectedSignal]
+                ? data.selectedSignal
+                : "blue";
+
+            const nextSequence = Array.isArray(data.sequence)
+                ? data.sequence.filter(key => !!fishImages[key])
+                : [];
+
+            const oldMode = liveControl.mode;
+            const oldSequence = Array.isArray(liveControl.sequence)
+                ? liveControl.sequence
+                : [];
+
+            const sequenceChanged =
+                oldMode !== nextMode ||
+                oldSequence.length !== nextSequence.length ||
+                oldSequence.some((v, i) => v !== nextSequence[i]);
+
+            liveControl = {
+                enabled: data.enabled !== false,
+                mode: nextMode,
+                selectedSignal: nextSelected,
+                sequence: nextSequence,
+                version: Number(data.version || 0)
+            };
+
+            if (nextMode !== "sequence" || sequenceChanged) {
+                sequenceIndex = 0;
+            }
+        }, (error) => {
+            console.error("Live signal control listener error:", error);
+        });
+}
+
+async function getSignal() {
+    if (predictionBusy) return;
+    predictionBusy = true;
+
+    const oldText = predictBtn.innerHTML;
+    predictBtn.disabled = true;
+    predictBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+
+    try {
+        showLoading();
+
+        await new Promise(resolve => setTimeout(resolve, 2400));
+
+        const signal = getNextSignalForClick();
+
+        if (!signal) {
+            showNoSignal();
+            return;
+        }
+
+        showControlledSignal(signal, true);
+    } finally {
+        predictionBusy = false;
+        predictBtn.disabled = false;
+        predictBtn.innerHTML = oldText;
+    }
+}
+
+function refreshSignal() {
+    subscribeToLiveSignalControl();
+}
+
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        currentUser = user;
+        updateStats();
+        subscribeToLiveSignalControl();
+    } else {
+        window.location.href = "index.html";
+    }
+});
+
+predictBtn.addEventListener("click", getSignal);
+refreshBtn.addEventListener("click", refreshSignal);
+
+updateStats();
+</script>
 </body>
 </html>
